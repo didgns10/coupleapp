@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/mainpage"
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+            android:title="메인페이지"
+            />
+        <item
+            android:id="@+id/my_exercise"
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+            android:title="나만의 맞춤 운동"
+            />
+        <item
+            android:id="@+id/exercise_dictionary"
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+            android:title="운동사전"
+            />
+        <item
+            android:id="@+id/my_record"
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+            android:title="내기록"
+            />
+    </group>
+</menu>
