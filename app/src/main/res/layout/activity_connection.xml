@@ -2,11 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.SignActivity"
     android:orientation="vertical"
-    android:weightSum="3">
+    android:visibility="gone"
+    android:weightSum="3"
+    tools:context=".Activity.SignActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -59,6 +61,15 @@
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
             android:text="연결하기" />
+
+        <TextView
+            android:id="@+id/tv_grant"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="승인 대기 중입니다. "
+            android:visibility="gone" />
 
     </LinearLayout>
 

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="6"
+    android:weightSum="4"
     tools:context=".Activity.SignActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -35,12 +35,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
+        <TextView
+            android:id="@+id/tv_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textColor="#FF0000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="4"
+        android:layout_weight="2"
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -50,21 +60,25 @@
 
             <ImageView
                 android:id="@+id/imgv_profile"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:background="#FDD60000"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:srcCompat="@tools:sample/avatars[1]" />
+                app:srcCompat="@drawable/img_android"
+                tools:ignore="VectorDrawableCompat" />
 
             <RadioGroup
+                android:id="@+id/radioGroup"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imgv_profile"
-                app:layout_constraintTop_toTopOf="parent"
-                android:orientation="horizontal">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <RadioButton
                     android:id="@+id/rbtn_man"
@@ -96,52 +110,16 @@
             android:hint="이름"
             android:inputType="text" />
 
-        <DatePicker
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:id="@+id/dp_birtday">
-
-        </DatePicker>
-        <DatePicker
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:id="@+id/dp_date">
-
-        </DatePicker>
-
-        <TextView
-            android:id="@+id/tv_birthday"
+        <EditText
+            android:id="@+id/et_birthday"
             android:layout_width="210dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:ems="10"
+            android:clickable="true"
+            android:editable="false"
+            android:focusable="false"
             android:hint="생일" />
-
-        <Button
-            android:id="@+id/btn_birthday"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="생일선택"></Button>
-
-        <TextView
-            android:id="@+id/tv_date"
-            android:layout_width="210dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:ems="10"
-            android:hint="기념일" />
-
-        <Button
-            android:id="@+id/btn_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="기념일선택"></Button>
 
         <Button
             android:id="@+id/btn_start"
@@ -164,7 +142,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="위 내용은 소중한 상대방의 비트윈에도 보이며"
+            android:text="위 내용은 소중한 상대방의 너와나에도 보이며"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
