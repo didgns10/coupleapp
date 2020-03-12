@@ -22,7 +22,7 @@ public interface ApiInterface {
     );
 
     @FormUrlEncoded
-    @POST("profile.php")
+    @POST("image_upload.php")
     Call<ImageClass> uploadImage(@Field("couple_idx") String couple_idx,
                                     @Field("title") String title,
                                     @Field("image") String image,

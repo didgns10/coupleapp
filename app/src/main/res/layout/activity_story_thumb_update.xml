@@ -47,21 +47,21 @@
                 android:id="@+id/bt_upload"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:background="#FF6C92"
                 android:text="등록"
                 android:textColor="#F5F0F0"
                 android:textSize="24sp"
+                android:layout_marginTop="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ftbt_image" />
+                app:layout_constraintTop_toBottomOf="@+id/et_date" />
 
             <TextView
                 android:id="@+id/textView_repw"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="스토리 올리기"
+                android:text="스토리 수정"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -79,18 +79,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView_repw" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/ftbt_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:layout_marginEnd="10dp"
-                android:clickable="true"
-                app:backgroundTint="#FF6C92"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/contnet_layout"
-                app:srcCompat="@drawable/album_img" />
-
             <EditText
                 android:id="@+id/et_date"
                 android:layout_width="210dp"
@@ -101,17 +89,9 @@
                 android:focusable="false"
                 android:hint="날짜"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.502"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/et_stroy_title" />
-
-            <TextView
-                android:id="@+id/tv_imagecnt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/et_date" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

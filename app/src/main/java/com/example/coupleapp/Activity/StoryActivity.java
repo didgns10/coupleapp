@@ -117,8 +117,8 @@ public class StoryActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which)
                             {
                                 if(which==0){
-                                    Toast.makeText(getApplicationContext(),
-                                            oItems[0], Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(StoryActivity.this, StoryUploadActivity.class);
+                                    startActivity(intent);
                                 }else if(which==1){
 
                                     Toast.makeText(getApplicationContext(),
@@ -126,7 +126,7 @@ public class StoryActivity extends AppCompatActivity {
                                 }
                             }
                         })
-                        .setCancelable(false)
+                        .setCancelable(true)
                         .show();
             }
 

@@ -1,4 +1,4 @@
-package com.example.coupleapp;
+package com.example.coupleapp.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,22 +16,16 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.coupleapp.Activity.ApiClient;
-import com.example.coupleapp.Activity.ApiInterface;
-import com.example.coupleapp.Activity.ImageClass;
-import com.example.coupleapp.Activity.MainActivity;
-import com.example.coupleapp.Activity.StoryActivity;
+import com.example.coupleapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 import retrofit2.Call;
@@ -91,11 +85,13 @@ public class StoryUploadActivity extends AppCompatActivity {
         imageButton_back = findViewById(R.id.imageButton_back);
         ftbt_image = findViewById(R.id.ftbt_image);
         bt_upload = findViewById(R.id.bt_upload);
+        tv_imagecnt =findViewById(R.id.tv_imagecnt);
 
         //이미지 추가 버튼을 누르게 되면
         ftbt_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                arrayList.clear();
                 showChooser();
             }
         });
@@ -104,6 +100,17 @@ public class StoryUploadActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 uploadImage();
+                Toast.makeText(StoryUploadActivity.this,"사진이 업로드 되었습니다.",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(StoryUploadActivity.this, StoryActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        et_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(StoryUploadActivity.this, myDatePicker, myCalendar.get(Calendar.YEAR),
+                        myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
 
@@ -136,18 +143,22 @@ public class StoryUploadActivity extends AppCompatActivity {
 
                             try {
                                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),imageUri); //그다음 해당 uri의 비트맵에 저장을하고
+                                bitmap = Bitmap.createScaledBitmap(bitmap,700,900,true);
                                 arrayList.add(bitmap); //비트맵 배열에 담는다.
 
                             } catch (Exception e) {
                             }
                         }
+                        tv_imagecnt.setText("사진 총 "+arrayList.size()+"개");
                     } else if (resultData.getData() != null) {  //이미지가 하나만 선택된경우에는
 
                         final Uri uri = resultData.getData();
 
                         try {
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
+                            bitmap = Bitmap.createScaledBitmap(bitmap,700,900,true);
                             arrayList.add(bitmap);
+                            tv_imagecnt.setText("사진 총 "+arrayList.size()+"개");
 
                         } catch (Exception e) {
                         }
@@ -167,6 +178,7 @@ public class StoryUploadActivity extends AppCompatActivity {
             String thumb = "thumb";
             String album = "스토리";
             String day = et_date.getText().toString();
+            Log.e("로그찡",""+arrayList.size());
 
             Log.e("어레이",Image);
             Log.e("어레이",Title);
@@ -179,7 +191,7 @@ public class StoryUploadActivity extends AppCompatActivity {
                 public void onResponse(Call<ImageClass> call, Response<ImageClass> response) {  // 콜해준다음에 반응
 
                     ImageClass imageClass = response.body();
-                    Toast.makeText(StoryUploadActivity.this,"Server Response: "+imageClass.getResponse(),Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(StoryUploadActivity.this,"Server Response: "+imageClass.getResponse(),Toast.LENGTH_SHORT).show();
 
 
                 }
@@ -207,7 +219,7 @@ public class StoryUploadActivity extends AppCompatActivity {
                     public void onResponse(Call<ImageClass> call, Response<ImageClass> response) {  // 콜해준다음에 반응
 
                         imageClass1 = response.body();
-                        Toast.makeText(StoryUploadActivity.this,"Server Response: "+imageClass1.getResponse(),Toast.LENGTH_SHORT).show();
+                      //  Toast.makeText(StoryUploadActivity.this,"Server Response: "+imageClass1.getResponse(),Toast.LENGTH_SHORT).show();
 
 
                     }
@@ -218,7 +230,7 @@ public class StoryUploadActivity extends AppCompatActivity {
                     }
                 });
             }
-            if(imageClass1.getResponse().equals("yes"))
+
         }
 
 
