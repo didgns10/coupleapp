@@ -7,9 +7,9 @@ import retrofit2.http.POST;
 
 public interface ApiInterface {
 
-/*    @FormUrlEncoded
-    @POST("uploads.php")
-    Call<ImageClass> uploadImage(@Field("title") String title, @Field("image") String image);*/
+    @FormUrlEncoded
+    @POST("mainimg.php")
+    Call<MainImgClass> uploadImage(@Field("email") String email, @Field("imgurl") String imgurl,@Field("idx") String idx);
 
     @FormUrlEncoded
     @POST("profile.php")
@@ -19,6 +19,16 @@ public interface ApiInterface {
                                     @Field("sex") String sex,
                                     @Field("imgurl") String imgurl,
                                     @Field("date") String date
+    );
+
+    @FormUrlEncoded
+    @POST("profile.php")
+    Call<ImageClass> uploadImage(@Field("couple_idx") String couple_idx,
+                                    @Field("title") String title,
+                                    @Field("image") String image,
+                                    @Field("thumb") String thumb,
+                                    @Field("day") String day,
+                                    @Field("album") String album
     );
 
 }

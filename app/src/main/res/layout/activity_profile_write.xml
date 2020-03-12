@@ -62,7 +62,7 @@
                 android:id="@+id/imgv_profile"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:background="#FDD60000"
+                android:background="#FDEBE4E4"
                 android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

@@ -7,19 +7,24 @@
             android:title="메인페이지"
             />
         <item
-            android:id="@+id/my_exercise"
+            android:id="@+id/date_course"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-            android:title="나만의 맞춤 운동"
+            android:title="데이트코스 추천AI"
             />
         <item
-            android:id="@+id/exercise_dictionary"
+            android:id="@+id/story_album"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-            android:title="운동사전"
+            android:title="스토리 앨범"
             />
         <item
-            android:id="@+id/my_record"
+            android:id="@+id/couple_diary"
             style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
-            android:title="내기록"
+            android:title="커플 다이어리"
+            />
+        <item
+            android:id="@+id/couple_calender"
+            style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+            android:title="커플 캘린더"
             />
     </group>
 </menu>

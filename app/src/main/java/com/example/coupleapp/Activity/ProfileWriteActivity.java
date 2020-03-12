@@ -234,6 +234,7 @@ public class ProfileWriteActivity extends AppCompatActivity {
 
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),path);
+                bitmap = Bitmap.createScaledBitmap(bitmap,700,900,true);
                 imgv_profile.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -250,14 +251,14 @@ public class ProfileWriteActivity extends AppCompatActivity {
     }
 
     private void updateLabel() {
-        String myFormat = "yyyyMMdd";    // 출력형식   2018/11/28
+        String myFormat = "yyyy-MM-dd";    // 출력형식   2018/11/28
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.KOREA);
 
         et_birthday.setText(sdf.format(myCalendar.getTime()));
     }
 
     private void updateLabel1() {
-        String myFormat = "yyyyMMdd";    // 출력형식   2018/11/28
+        String myFormat = "yyyy-MM-dd";    // 출력형식   2018/11/28
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.KOREA);
 
         et_date.setText(sdf.format(myCalendar1.getTime()));
