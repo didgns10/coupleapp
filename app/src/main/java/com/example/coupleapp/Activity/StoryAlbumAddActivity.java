@@ -23,21 +23,22 @@ import com.example.coupleapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.ByteArrayOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class StoryUploadActivity extends AppCompatActivity {
+public class StoryAlbumAddActivity extends AppCompatActivity {
 
     private SharedPreferences sf;
     private SharedPreferences sf_idx;
     private String email;
     private String couple_idx;
+    private String title;
+    private String img_day;
+    private String position;
 
     private EditText et_story_title,et_date;
     private ImageButton imageButton_back;
@@ -53,26 +54,15 @@ public class StoryUploadActivity extends AppCompatActivity {
     private ArrayList<Bitmap> arrayList;
 
     private ImageClass imageClass1;
-
     private boolean size=false;
 
-    Calendar myCalendar = Calendar.getInstance();
 
-    DatePickerDialog.OnDateSetListener myDatePicker = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            myCalendar.set(Calendar.YEAR, year);
-            myCalendar.set(Calendar.MONTH, month);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            updateLabel();
-        }
-    };
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_story_upload);
+        setContentView(R.layout.activity_story_album_add);
 
         //로그인 저장 정보
         sf = getSharedPreferences("LOGIN",MODE_PRIVATE);
@@ -82,9 +72,19 @@ public class StoryUploadActivity extends AppCompatActivity {
         sf_idx =getSharedPreferences("COPLE",MODE_PRIVATE);
         couple_idx = sf_idx.getString("cople_idx","");
 
-        et_story_title = findViewById(R.id.et_stroy_title);
-        et_date = findViewById(R.id.et_date);
+        //인텐트로 값 받아오기
+        title = getIntent().getStringExtra("title");
+        //프로그램 번호 가져오는 부분
+        img_day = getIntent().getStringExtra("date");
+        position = getIntent().getStringExtra("position");
+
         imageButton_back = findViewById(R.id.imageButton_back);
+        imageButton_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         ftbt_image = findViewById(R.id.ftbt_image);
         bt_upload = findViewById(R.id.bt_upload);
         tv_imagecnt =findViewById(R.id.tv_imagecnt);
@@ -104,18 +104,11 @@ public class StoryUploadActivity extends AppCompatActivity {
                 uploadImage();
             }
         });
-        et_date.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new DatePickerDialog(StoryUploadActivity.this, myDatePicker, myCalendar.get(Calendar.YEAR),
-                        myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
+
 
         //비트맵의 어레이 리스트를 생성한다.
         arrayList = new ArrayList<>();
     }
-
     //이미지를 선택하는 함수구현
     private void showChooser() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -173,26 +166,34 @@ public class StoryUploadActivity extends AppCompatActivity {
 
         if(arrayList != null) { //배열이 담겨져있으면
 
-            if (size == false) {
-                String Image = imageToString(arrayList.get(0)); //배열의 순서에 있는 배열값을 (이미지를) String으로 변환시켜준다.
-                String Title = et_story_title.getText().toString();  //타이틀 이고
-                String thumb = "thumb";
-                String album = "스토리";
-                String day = et_date.getText().toString();
-                Log.e("로그찡", "" + arrayList.size());
+            if (size==false) {
+                String Image1 = imageToString(arrayList.get(0)); //배열의 순서에 있는 배열값을 (이미지를) String으로 변환시켜준다.
 
-                Log.e("어레이", Image);
-                Log.e("어레이", Title);
-                Log.e("어레이", arrayList.get(0) + ":0");
-                ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class); //포스트로 넘길것을 해당 클래스와 인터페이스에 정의되어있는것을 호출해준다.
-                Call<ImageClass> call = apiInterface.uploadImage(couple_idx, Title, Image, thumb, day, album); //imageclass 에 있는것을 업로드 해주는부분
+                int posi = Integer.parseInt(position);
+                String thumb1 = "" + (posi + 0);
+                String album1 = "스토리";
 
-                call.enqueue(new Callback<ImageClass>() {
+                Log.e("어레이", arrayList.get(0) + ":" + 0);
+                ApiInterface apiInterface1 = ApiClient.getApiClient().create(ApiInterface.class); //포스트로 넘길것을 해당 클래스와 인터페이스에 정의되어있는것을 호출해준다.
+                Call<ImageClass> call1 = apiInterface1.uploadImage(couple_idx, title, Image1, thumb1, img_day, album1); //imageclass 에 있는것을 업로드 해주는부분
+
+                call1.enqueue(new Callback<ImageClass>() {
                     @Override
                     public void onResponse(Call<ImageClass> call, Response<ImageClass> response) {  // 콜해준다음에 반응
 
-                        ImageClass imageClass = response.body();
-                        //   Toast.makeText(StoryUploadActivity.this,"Server Response: "+imageClass.getResponse(),Toast.LENGTH_SHORT).show();
+                        imageClass1 = response.body();
+                        Log.e("리스폰",imageClass1.getResponse()+"");
+
+                        if (imageClass1.getResponse().equals("yes")) {
+                            Toast.makeText(StoryAlbumAddActivity.this, "사진이 추가 되었습니다.", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(StoryAlbumAddActivity.this, StoryVIewActivity.class);
+                            intent.putExtra("date", img_day);
+                            intent.putExtra("title", title);
+                            intent.addFlags(intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            finish();
+
+                        }
 
 
                     }
@@ -204,52 +205,22 @@ public class StoryUploadActivity extends AppCompatActivity {
                 });
             } else {
 
-                String Image = imageToString(arrayList.get(0)); //배열의 순서에 있는 배열값을 (이미지를) String으로 변환시켜준다.
-                String Title = et_story_title.getText().toString();  //타이틀 이고
-                String thumb = "thumb";
-                String album = "스토리";
-                String day = et_date.getText().toString();
-                Log.e("로그찡", "" + arrayList.size());
-
-                Log.e("어레이", Image);
-                Log.e("어레이", Title);
-                Log.e("어레이", arrayList.get(0) + ":0");
-                ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class); //포스트로 넘길것을 해당 클래스와 인터페이스에 정의되어있는것을 호출해준다.
-                Call<ImageClass> call = apiInterface.uploadImage(couple_idx, Title, Image, thumb, day, album); //imageclass 에 있는것을 업로드 해주는부분
-
-                call.enqueue(new Callback<ImageClass>() {
-                    @Override
-                    public void onResponse(Call<ImageClass> call, Response<ImageClass> response) {  // 콜해준다음에 반응
-
-                        ImageClass imageClass = response.body();
-                        //   Toast.makeText(StoryUploadActivity.this,"Server Response: "+imageClass.getResponse(),Toast.LENGTH_SHORT).show();
-
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<ImageClass> call, Throwable t) {
-
-                    }
-                });
-
-                for (int i =1; i < arrayList.size()-1; i++) { //배열의 사이즈에 맞게 포문을 돌려주고
+                for (int i = 0; i < arrayList.size()-1; i++) { //배열의 사이즈에 맞게 포문을 돌려주고
                     String Image1 = imageToString(arrayList.get(i)); //배열의 순서에 있는 배열값을 (이미지를) String으로 변환시켜준다.
-                    String Title1 = et_story_title.getText().toString();  //타이틀 이고
-                    String thumb1 = "" + i;
+
+                    int posi = Integer.parseInt(position);
+                    String thumb1 = "" + (posi + i);
                     String album1 = "스토리";
-                    String day1 = et_date.getText().toString();
 
                     Log.e("어레이", arrayList.get(i) + ":" + i);
                     ApiInterface apiInterface1 = ApiClient.getApiClient().create(ApiInterface.class); //포스트로 넘길것을 해당 클래스와 인터페이스에 정의되어있는것을 호출해준다.
-                    Call<ImageClass> call1 = apiInterface1.uploadImage(couple_idx, Title1, Image1, thumb1, day1, album1); //imageclass 에 있는것을 업로드 해주는부분
+                    Call<ImageClass> call1 = apiInterface1.uploadImage(couple_idx, title, Image1, thumb1, img_day, album1); //imageclass 에 있는것을 업로드 해주는부분
 
                     call1.enqueue(new Callback<ImageClass>() {
                         @Override
                         public void onResponse(Call<ImageClass> call, Response<ImageClass> response) {  // 콜해준다음에 반응
 
                             imageClass1 = response.body();
-                            //  Toast.makeText(StoryUploadActivity.this,"Server Response: "+imageClass1.getResponse(),Toast.LENGTH_SHORT).show();
 
 
                         }
@@ -260,15 +231,15 @@ public class StoryUploadActivity extends AppCompatActivity {
                         }
                     });
                 }
-                String Title1 = et_story_title.getText().toString();  //타이틀 이고
                 String Image1 = imageToString(arrayList.get(arrayList.size() - 1)); //배열의 순서에 있는 배열값을 (이미지를) String으로 변환시켜준다.
-                String thumb1 = "" + (arrayList.size() - 1);
+
+                int posi = Integer.parseInt(position);
+                String thumb1 = "" + (posi + arrayList.size() - 1);
                 String album1 = "스토리";
-                String day1 = et_date.getText().toString();
 
                 Log.e("어레이", arrayList.get(arrayList.size() - 1) + ":" + (arrayList.size() - 1));
                 ApiInterface apiInterface1 = ApiClient.getApiClient().create(ApiInterface.class); //포스트로 넘길것을 해당 클래스와 인터페이스에 정의되어있는것을 호출해준다.
-                Call<ImageClass> call1 = apiInterface1.uploadImage(couple_idx, Title1, Image1, thumb1, day1, album1); //imageclass 에 있는것을 업로드 해주는부분
+                Call<ImageClass> call1 = apiInterface1.uploadImage(couple_idx, title, Image1, thumb1, img_day, album1); //imageclass 에 있는것을 업로드 해주는부분
 
                 call1.enqueue(new Callback<ImageClass>() {
                     @Override
@@ -278,8 +249,11 @@ public class StoryUploadActivity extends AppCompatActivity {
                         //  Toast.makeText(StoryUploadActivity.this,"Server Response: "+imageClass1.getResponse(),Toast.LENGTH_SHORT).show();
                         if (imageClass1.getResponse().equals("yes")) {
                             //  Toast.makeText(StoryUploadActivity.this,"Server Response: "+imageClass1.getResponse(),Toast.LENGTH_SHORT).show();
-                            Toast.makeText(StoryUploadActivity.this,"사진이 업로드 되었습니다.",Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(StoryUploadActivity.this, StoryActivity.class);
+                            Toast.makeText(StoryAlbumAddActivity.this, "사진이 추가 되었습니다.", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(StoryAlbumAddActivity.this, StoryVIewActivity.class);
+                            intent.putExtra("date", img_day);
+                            intent.putExtra("title", title);
+                            finish();
                             startActivity(intent);
                         }
 
@@ -303,11 +277,5 @@ public class StoryUploadActivity extends AppCompatActivity {
         bit.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
         byte[] imgByte = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(imgByte,Base64.DEFAULT);
-    }
-    private void updateLabel() {
-        String myFormat = "yyyy-MM-dd";    // 출력형식   2018/11/28
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.KOREA);
-
-        et_date.setText(sdf.format(myCalendar.getTime()));
     }
 }

@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -49,7 +50,7 @@ public class StoryVIewActivity extends AppCompatActivity {
     private String title;
     private String img_day;
 
-    private TextView tv_title,tv_day;
+    private TextView tv_title,tv_day,tv_photoadd;
     private ImageButton imageButton_back;
 
 
@@ -73,14 +74,28 @@ public class StoryVIewActivity extends AppCompatActivity {
 
         tv_day= findViewById(R.id.tv_day);
         tv_title= findViewById(R.id.tv_title);
+        tv_photoadd = findViewById(R.id.tv_photoadd);
 
         tv_title.setText(title);
         tv_day.setText(img_day);
         imageButton_back = findViewById(R.id.imageButton_back);
 
+        tv_photoadd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StoryVIewActivity.this, StoryAlbumAddActivity.class);
+                intent.putExtra("date",img_day);
+                intent.putExtra("title",title);
+                intent.putExtra("position",mArrayList.get(mArrayList.size()-1).getImg_idx()+"");
+                startActivity(intent);
+            }
+        });
+
         imageButton_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(StoryVIewActivity.this,StoryActivity.class);
+                startActivity(intent);
                 finish();
             }
         });
@@ -107,13 +122,29 @@ public class StoryVIewActivity extends AppCompatActivity {
         // 어댑터에 데이터가 변경됐다는 걸 알린다
         mAdapter.notifyDataSetChanged();
 
+/*        // 그 다음 AsyncTask 객체를 만들어 execute()한다
+        GetData task = new GetData();
+
+        // execute() 사용 시 DB의 값을 JSON 형태로 가져오는 코드가 적힌 php 파일의 경로를 적어
+        // AsyncTask로 값들을 JSON 형태로 가져올 수 있게 한다
+        task.execute( "http://" + IP_ADDRESS + "/StoryView.php?couple_idx="+couple_idx+"&title="+title+"&img_day="+img_day, "");*/
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         // 그 다음 AsyncTask 객체를 만들어 execute()한다
+        mArrayList.clear();
         GetData task = new GetData();
 
         // execute() 사용 시 DB의 값을 JSON 형태로 가져오는 코드가 적힌 php 파일의 경로를 적어
         // AsyncTask로 값들을 JSON 형태로 가져올 수 있게 한다
         task.execute( "http://" + IP_ADDRESS + "/StoryView.php?couple_idx="+couple_idx+"&title="+title+"&img_day="+img_day, "");
     }
+
+
+
+
     /* HTTPUrlConnection을 써서 POST 방식으로 phpmyadmin DB에서 값들을 가져오는 AsyncTask 클래스 정의 */
     private class GetData extends AsyncTask<String, Void, String> {
 
@@ -124,14 +155,15 @@ public class StoryVIewActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            mArrayList.clear();
 
-            // 프래그먼트에 프로그레스 다이얼로그를 띄우고, 값이 가져와지는 동안 기다리라는 메시지를 띄운다
+/*            // 프래그먼트에 프로그레스 다이얼로그를 띄우고, 값이 가져와지는 동안 기다리라는 메시지를 띄운다
             // 마찬가지로 프래그먼트를 쓰기 때문에 context 대신 getActivity() 사용
             progressDialog = ProgressDialog.show(StoryVIewActivity.this,
                     "Please Wait",
                     null,
                     true,
-                    true);
+                    true);*/
         }
 
         /* AsyncTask 작업 종료 후 UI 처리할 내용을 정의하는 함수 */
@@ -139,8 +171,8 @@ public class StoryVIewActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            // 프로그레스 다이얼로그를 죽이고
-            progressDialog.dismiss();
+     /*       // 프로그레스 다이얼로그를 죽이고
+            progressDialog.dismiss();*/
 
             // doInBackground()의 리턴값이 담긴 result를 버튼 밑 텍스트뷰에 setText()해서 JSON 형태로 받아온 값들을 출력
 //            mTextViewResult.setText(result);
@@ -262,6 +294,12 @@ public class StoryVIewActivity extends AppCompatActivity {
                 storyVIewData.setImg(img);
                 storyVIewData.setImg_day(img_day);
                 storyVIewData.setImg_idx(img_idx);
+
+                Log.e("순서",titie);
+                Log.e("순서",img);
+                Log.e("순서",img_day);
+                Log.e("순서",img_idx);
+
 
                 // 데이터 모델 클래스 객체를 리사이클러뷰에 연결된 ArrayList에 삽입
                 mArrayList.add(storyVIewData);

@@ -22,11 +22,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activity.Story_Thumb_UpdateActivity"></activity>
-        <activity android:name=".Activity.StoryDetailActivity" />
-        <activity android:name=".Activity.StoryVIewActivity" />
+        <activity android:name=".Activity.StoryAlbumAddActivity"></activity>
+        <activity android:name=".Activity.Story_Thumb_UpdateActivity" />
+        <activity android:name=".Activity.StoryDetailActivity"
+            android:launchMode="singleInstance"/>
+        <activity android:name=".Activity.StoryVIewActivity"
+            android:launchMode="singleInstance"/>
         <activity android:name=".Activity.StoryUploadActivity" />
-        <activity android:name=".Activity.StoryActivity" />
+        <activity android:name=".Activity.StoryActivity"
+            android:launchMode="singleInstance" />
         <activity android:name=".Activity.MainActivity">
 
             <!--

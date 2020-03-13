@@ -73,12 +73,12 @@ public class StoryDetailActivity extends AppCompatActivity {
         position = getIntent().getStringExtra("position");
 
 
-        Log.e("스토리1",img);
-        Log.e("스토리1",img_idx);
-        Log.e("스토리1",img_day);
-        Log.e("스토리1",title);
-        Log.e("스토리1",couple_idx);
-        Log.e("스토리1",position);
+        Log.e("스토리2",img);
+        Log.e("스토리2",img_idx);
+        Log.e("스토리2",img_day);
+        Log.e("스토리2",title);
+        Log.e("스토리2",couple_idx);
+        Log.e("스토리2",position);
 
 
          posi = Integer.parseInt(position);
@@ -90,7 +90,6 @@ public class StoryDetailActivity extends AppCompatActivity {
 
 
         mList = new ArrayList<>();
-
         adapter = new StorySlideAdapter(mList,this);
 
         mList.clear();
@@ -133,6 +132,7 @@ public class StoryDetailActivity extends AppCompatActivity {
                 // 결과가 있다면 버튼 위 텍스트뷰에 JSON 데이터들을 텍스트뷰 형태에 맞게 출력한다
                 mJsonString = result;
                 showResult();
+
             }
         }
 
@@ -251,13 +251,14 @@ public class StoryDetailActivity extends AppCompatActivity {
 
 
             }
-            viewPager.setAdapter(adapter);
-            viewPager.setCurrentItem(posi);
 
         } catch (JSONException e) {
             // 에러 뜨면 결과 출력
             Log.e(TAG, "showResult : ", e);
         }
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(posi);
+        adapter.notifyDataSetChanged();
 
     }   // showResult() end
 }

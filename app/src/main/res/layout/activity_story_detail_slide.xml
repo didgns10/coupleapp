@@ -21,18 +21,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
-    <ImageButton
-        android:id="@+id/imgbt_delete"
-        android:layout_width="28dp"
-        android:layout_height="36dp"
-        android:layout_marginTop="6dp"
-        android:background="#0A0909"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imgv_detail"
-        app:srcCompat="@drawable/ic_delete" />
-
     <TextView
         android:id="@+id/tv_cnt"
         android:layout_width="wrap_content"

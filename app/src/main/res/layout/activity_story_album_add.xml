@@ -27,22 +27,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@android:drawable/ic_menu_revert" />
 
-            <LinearLayout
-                android:id="@+id/contnet_layout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/et_stroy_title">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"/>
-
-            </LinearLayout>
-
             <Button
                 android:id="@+id/bt_upload"
                 android:layout_width="0dp"
@@ -61,24 +45,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="스토리 올리기"
+                android:text="사진 추가"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <EditText
-                android:id="@+id/et_stroy_title"
-                android:layout_width="210dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:ems="10"
-                android:inputType="textMultiLine"
-                android:hint="제목(20자 이내)"
-                android:maxLength="20"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView_repw" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/ftbt_image"
@@ -89,30 +60,17 @@
                 android:clickable="true"
                 app:backgroundTint="#FF6C92"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/contnet_layout"
+                app:layout_constraintTop_toBottomOf="@+id/textView_repw"
                 app:srcCompat="@drawable/album_img" />
-
-            <EditText
-                android:id="@+id/et_date"
-                android:layout_width="210dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:clickable="true"
-                android:editable="false"
-                android:focusable="false"
-                android:hint="날짜"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/et_stroy_title" />
 
             <TextView
                 android:id="@+id/tv_imagecnt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                app:layout_constraintBottom_toTopOf="@+id/bt_upload"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/et_date" />
+                app:layout_constraintTop_toBottomOf="@+id/textView_repw" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

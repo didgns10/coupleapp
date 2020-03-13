@@ -26,6 +26,8 @@ public class StoryActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private DrawerLayout mDrawerLayout;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -145,14 +145,16 @@ public class ConnectionActivity extends AppCompatActivity {
             //둘다 연결이 성공하면
             if(result.equals("2")){
 
-                //프로필 작성 화면으로 넘어간다
-                Intent intent = new Intent(ConnectionActivity.this,ProfileWriteActivity.class);
-                startActivity(intent);
                 //번호 입력 성공했다는 표시
                 SharedPreferences num_ok = getSharedPreferences("NUM_OK",MODE_PRIVATE);
                 SharedPreferences.Editor editor1 = num_ok.edit();
                 editor1.putBoolean("NUM_OK"+email, true);
                 editor1.apply();
+
+                //프로필 작성 화면으로 넘어간다
+                Intent intent = new Intent(ConnectionActivity.this,ProfileWriteActivity.class);
+                startActivity(intent);
+                finish();
 
             }else if(result.equals("1")){
                 //쉐어드 프리펀스를 이용해서 승인대기를 기달리게해준다.
@@ -310,6 +312,7 @@ public class ConnectionActivity extends AppCompatActivity {
                 //프로필 작성 화면으로 넘어간다
                 Intent intent = new Intent(ConnectionActivity.this,ProfileWriteActivity.class);
                 startActivity(intent);
+                finish();
 
 
             }else if(result.equals("1")){

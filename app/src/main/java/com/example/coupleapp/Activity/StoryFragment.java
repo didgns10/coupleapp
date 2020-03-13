@@ -105,15 +105,30 @@ public class StoryFragment extends Fragment {
         // 어댑터에 데이터가 변경됐다는 걸 알린다
         mAdapter.notifyDataSetChanged();
 
+/*
         // 그 다음 AsyncTask 객체를 만들어 execute()한다
         GetData task = new GetData();
 
         // execute() 사용 시 DB의 값을 JSON 형태로 가져오는 코드가 적힌 php 파일의 경로를 적어
         // AsyncTask로 값들을 JSON 형태로 가져올 수 있게 한다
         task.execute( "http://" + IP_ADDRESS + "/story_thumb.php?couple_idx="+couple_idx, "");
+*/
 
         // inflate() 대신 위에서 선언한 ViewGroup의 객체를 리턴시켜 fragment.xml의 뷰들이 보이게 한다
         return viewGroup;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // 그 다음 AsyncTask 객체를 만들어 execute()한다
+        mArrayList.clear();
+        // 그 다음 AsyncTask 객체를 만들어 execute()한다
+        GetData task = new GetData();
+
+        // execute() 사용 시 DB의 값을 JSON 형태로 가져오는 코드가 적힌 php 파일의 경로를 적어
+        // AsyncTask로 값들을 JSON 형태로 가져올 수 있게 한다
+        task.execute( "http://" + IP_ADDRESS + "/story_thumb.php?couple_idx="+couple_idx, "");
     }
 
     /* HTTPUrlConnection을 써서 POST 방식으로 phpmyadmin DB에서 값들을 가져오는 AsyncTask 클래스 정의 */
@@ -127,13 +142,13 @@ public class StoryFragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            // 프래그먼트에 프로그레스 다이얼로그를 띄우고, 값이 가져와지는 동안 기다리라는 메시지를 띄운다
+/*            // 프래그먼트에 프로그레스 다이얼로그를 띄우고, 값이 가져와지는 동안 기다리라는 메시지를 띄운다
             // 마찬가지로 프래그먼트를 쓰기 때문에 context 대신 getActivity() 사용
             progressDialog = ProgressDialog.show(getActivity(),
                     "Please Wait",
                     null,
                     true,
-                    true);
+                    true);*/
         }
 
         /* AsyncTask 작업 종료 후 UI 처리할 내용을 정의하는 함수 */
@@ -142,7 +157,7 @@ public class StoryFragment extends Fragment {
             super.onPostExecute(result);
 
             // 프로그레스 다이얼로그를 죽이고
-            progressDialog.dismiss();
+           // progressDialog.dismiss();
 
             // doInBackground()의 리턴값이 담긴 result를 버튼 밑 텍스트뷰에 setText()해서 JSON 형태로 받아온 값들을 출력
 //            mTextViewResult.setText(result);
