@@ -31,55 +31,39 @@
                 android:id="@+id/bt_upload"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="50dp"
                 android:background="#FF6C92"
                 android:text="등록"
                 android:textColor="#F5F0F0"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ftbt_image" />
+                app:layout_constraintTop_toBottomOf="@+id/et_stroy_title" />
 
             <TextView
                 android:id="@+id/textView_repw"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:text="사진 추가"
+                android:text="앨범 수정"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/ftbt_image"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@+id/et_stroy_title"
+                android:layout_width="210dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:clickable="true"
-                app:backgroundTint="#FF6C92"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/recyclerView"
-                app:srcCompat="@drawable/album_img" />
-
-            <TextView
-                android:id="@+id/tv_imagecnt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="20dp"
+                android:ems="10"
+                android:inputType="textMultiLine"
+                android:hint="제목(10자 이내)"
+                android:maxLength="10"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView_repw" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="0dp"
-                android:layout_height="150dp"
-                android:layout_marginTop="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_imagecnt" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

@@ -52,7 +52,6 @@
                     android:layout_height="75dp"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="20dp"
-                    android:src="@drawable/ic_launcher_background"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"></de.hdodenhof.circleimageview.CircleImageView>
 
@@ -62,7 +61,6 @@
                     android:layout_height="75dp"
                     android:layout_marginTop="20dp"
                     android:layout_marginEnd="20dp"
-                    android:src="@drawable/ic_launcher_background"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"></de.hdodenhof.circleimageview.CircleImageView>
 
@@ -81,7 +79,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="1205일"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView10" />
@@ -102,9 +99,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginTop="15dp"
-                    android:text="TextView"
                     app:layout_constraintStart_toEndOf="@+id/textView12"
                     app:layout_constraintTop_toBottomOf="@+id/tv_date" />
 
@@ -114,8 +109,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
                     android:layout_marginEnd="10dp"
-                    android:layout_marginRight="10dp"
-                    android:text="TextView"
                     app:layout_constraintEnd_toStartOf="@+id/textView12"
                     app:layout_constraintTop_toBottomOf="@+id/tv_date" />
 

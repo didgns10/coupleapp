@@ -1,27 +1,18 @@
 package com.example.coupleapp.Activity;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.example.coupleapp.Adapter.AlbumAdapter;
-import com.example.coupleapp.Adapter.StoryThumbAdapter;
-import com.example.coupleapp.Model.AlbumData;
-import com.example.coupleapp.Model.StoryThumData;
+import com.example.coupleapp.Adapter.AlbumSlideAdapter;
+import com.example.coupleapp.Adapter.StorySlideAdapter;
+import com.example.coupleapp.Model.AlbumViewData;
+import com.example.coupleapp.Model.StoryVIewData;
 import com.example.coupleapp.R;
 
 import org.json.JSONArray;
@@ -35,18 +26,15 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Objects;
 
-import static android.content.Context.MODE_PRIVATE;
+public class AlbumDetailActivity extends AppCompatActivity {
 
-public class AlbumFragment extends Fragment {
+    private AlbumSlideAdapter adapter;
+    private ViewPager viewPager;
+    private ArrayList<AlbumViewData> mList;
 
-    private RecyclerView rv;
     private static String IP_ADDRESS="13.125.232.78";  // 퍼블릭 IPv4 주소
     private static String TAG = "스토리";          // 로그에 사용할 태그
-
-    private ArrayList<AlbumData> mArrayList;             // 모델 클래스의 데이터를 받아 리사이클러뷰에 뿌리는 데 쓸 ArrayList
-    private AlbumAdapter mAdapter;                       // 리사이클러뷰 어댑터
     private String mJsonString;                         // JSON 값을 저장할 String 변수
 
     private SharedPreferences sf;
@@ -54,77 +42,63 @@ public class AlbumFragment extends Fragment {
 
     private String email;
     private String couple_idx;
+    private String img;
+    private String img_idx;
+    private String position;
+    private String title;
+    private String album;
 
-    public AlbumFragment()
-    {
-        // Required empty public constructor (디폴트 생성자)
-    }
+    private int posi;
 
-    /* 프래그먼트의 화면을 그리는 메서드, onCreate()라고 생각하면 됨 */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_album_detail);
 
         //로그인 저장 정보
-        sf = getActivity().getSharedPreferences("LOGIN",MODE_PRIVATE);
+        sf = getSharedPreferences("LOGIN",MODE_PRIVATE);
         email = sf.getString("et_email","");
 
         //커플 인덱스 번호가져오기
-        sf_idx =getActivity().getSharedPreferences("COPLE",MODE_PRIVATE);
+        sf_idx =getSharedPreferences("COPLE",MODE_PRIVATE);
         couple_idx = sf_idx.getString("cople_idx","");
 
-        Log.e("로그",couple_idx);
+        //인텐트로 값 받아오기
+        img = getIntent().getStringExtra("img");
+        album = getIntent().getStringExtra("album");
 
-        // 프래그먼트에 리사이클러뷰, 텍스트뷰 등을 표시하려면 먼저 ViewGroup 클래스의 객체를 만들고, fragment의 xml 파일을 inflate해야 한다
-        ViewGroup viewGroup = (ViewGroup) inflater.inflate(R.layout.fragment_album, container, false);
+        //프로그램 번호 가져오는 부분
+        img_idx = getIntent().getStringExtra("img_idx");
+        position = getIntent().getStringExtra("position");
 
 
-        // 리사이클러뷰 선언
-        rv = (RecyclerView) viewGroup.findViewById(R.id.recyclerview_album);
+        Log.e("스토리2",img);
+        Log.e("스토리2",img_idx);
+        Log.e("스토리2",couple_idx);
+        Log.e("스토리2",position);
 
-        // 프래그먼트기 때문에 context가 아니라 getActivity()를 쓴다!!!
-        rv.setLayoutManager(new GridLayoutManager(getActivity(),2));
 
-        // 프래그먼트기 때문에 구분선을 줄 때 context 부분에 getActivity()를 넣어야 한다
-        // 그냥 getActivity()만 넣으면 노란 박스 쳐져서 안 보이게 하려고 getActivity()를 다르게 표현함
+        posi = Integer.parseInt(position);
 
-        // 리사이클러뷰에 연결되서 데이터를 뿌릴 ArrayList 선언
-        mArrayList = new ArrayList<>();
 
-        // 프래그먼트에서 리사이클러뷰의 어댑터를 붙일 땐 context 쓰는 부분에 getActivity()를 쓴다
-        mAdapter = new AlbumAdapter(mArrayList,getActivity());
-        rv.setAdapter(mAdapter);
+// 아까 만든 view
+        viewPager = (ViewPager)findViewById(R.id.view);
+        //adapter 초기화
 
-        // 버튼 위에 표시되는 텍스트뷰에 mArrayList의 내용들을 뿌리는데 이것들을 전부 지우고
-        mArrayList.clear();
 
-        // 어댑터에 데이터가 변경됐다는 걸 알린다
-        mAdapter.notifyDataSetChanged();
+        mList = new ArrayList<>();
+        adapter = new AlbumSlideAdapter(mList,this);
 
-/*        // 그 다음 AsyncTask 객체를 만들어 execute()한다
-        GetData task = new GetData();
+        mList.clear();
 
-        // execute() 사용 시 DB의 값을 JSON 형태로 가져오는 코드가 적힌 php 파일의 경로를 적어
-        // AsyncTask로 값들을 JSON 형태로 가져올 수 있게 한다
-        task.execute( "http://" + IP_ADDRESS + "/album.php?couple_idx="+couple_idx, "");*/
-
-        // inflate() 대신 위에서 선언한 ViewGroup의 객체를 리턴시켜 fragment.xml의 뷰들이 보이게 한다
-        return viewGroup;
-    }
-    @Override
-    public void onResume() {
-        super.onResume();
-        // 그 다음 AsyncTask 객체를 만들어 execute()한다
-        mArrayList.clear();
         // 그 다음 AsyncTask 객체를 만들어 execute()한다
         GetData task = new GetData();
 
         // execute() 사용 시 DB의 값을 JSON 형태로 가져오는 코드가 적힌 php 파일의 경로를 적어
         // AsyncTask로 값들을 JSON 형태로 가져올 수 있게 한다
-        task.execute( "http://" + IP_ADDRESS + "/album.php?couple_idx="+couple_idx, "");
-    }
 
+        task.execute( "http://" + IP_ADDRESS + "/albumView.php?couple_idx="+couple_idx+"&album="+album, "");
+    }
     /* HTTPUrlConnection을 써서 POST 방식으로 phpmyadmin DB에서 값들을 가져오는 AsyncTask 클래스 정의 */
     private class GetData extends AsyncTask<String, Void, String> {
 
@@ -135,14 +109,8 @@ public class AlbumFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            mList.clear();
 
-            // 프래그먼트에 프로그레스 다이얼로그를 띄우고, 값이 가져와지는 동안 기다리라는 메시지를 띄운다
-            // 마찬가지로 프래그먼트를 쓰기 때문에 context 대신 getActivity() 사용
-            progressDialog = ProgressDialog.show(getActivity(),
-                    "Please Wait",
-                    null,
-                    true,
-                    true);
         }
 
         /* AsyncTask 작업 종료 후 UI 처리할 내용을 정의하는 함수 */
@@ -150,8 +118,8 @@ public class AlbumFragment extends Fragment {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            // 프로그레스 다이얼로그를 죽이고
-            progressDialog.dismiss();
+     /*       // 프로그레스 다이얼로그를 죽이고
+            progressDialog.dismiss();*/
 
             // doInBackground()의 리턴값이 담긴 result를 버튼 밑 텍스트뷰에 setText()해서 JSON 형태로 받아온 값들을 출력
 //            mTextViewResult.setText(result);
@@ -238,11 +206,12 @@ public class AlbumFragment extends Fragment {
     /* DB 테이블 컬럼의 값들을 JSON 형태로 받아와서 리사이클러뷰에 연결된 ArrayList에 박는 함수 */
     private void showResult() {
 
-        String TAG_JSON="album";                         // JSON 배열의 이름
+        String TAG_JSON="albumview";                         // JSON 배열의 이름
 
         /* DB 컬럼명을 적는 String 변수 */
-        String TAG_TITLE = "albumtitle";                      // 정적 이미지(나중에 DB에서 이미지 뽑아올 것)
-        String TAG_IMG = "albumimg";     // 밑으로 3개는
+        String TAG_IMG = "img";     // 밑으로 3개는
+        String TAG_IMG_IDX = "img_idx";
+        String TAG_ALBUM = "album";
 
         try {
 
@@ -259,27 +228,36 @@ public class AlbumFragment extends Fragment {
 
                 // 컬럼의 값들을 getString()으로 받아와서 String 변수에 저장
                 // 정적 이미지는 나중에 DB에서 받아와야 한다. 일단 기본 이미지 채워넣음
-                String titie = item.getString(TAG_TITLE);
                 String img = item.getString(TAG_IMG);   // 운동 이름
+                String img_idx = item.getString(TAG_IMG_IDX);
+                String album = item.getString(TAG_ALBUM);
 
                 // 데이터 모델 클래스 객체 선언 후 settter()로 컬럼에서 값 추출
-                AlbumData albumData = new AlbumData();
+                AlbumViewData albumViewData = new AlbumViewData();
 
-                albumData.setAlbumtitle(titie);
-                albumData.setAlbumtitleimg(img);
+                albumViewData.setImg(img);
+                albumViewData.setAlbum(album);
+                albumViewData.setImg_idx(img_idx);
+
+                Log.e("순서",img);
+                Log.e("순서",img_idx);
+
 
                 // 데이터 모델 클래스 객체를 리사이클러뷰에 연결된 ArrayList에 삽입
-                mArrayList.add(albumData);
+                mList.add(albumViewData);
 
                 // ArrayList에 변동이 생겼으니 어댑터에 알림
-                mAdapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
             }
 
         } catch (JSONException e) {
             // 에러 뜨면 결과 출력
             Log.e(TAG, "showResult : ", e);
         }
+        viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(posi);
+        adapter.notifyDataSetChanged();
 
     }   // showResult() end
-
 }
+

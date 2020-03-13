@@ -27,22 +27,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@android:drawable/ic_menu_revert" />
 
-            <LinearLayout
-                android:id="@+id/contnet_layout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/et_stroy_title">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"/>
-
-            </LinearLayout>
-
             <Button
                 android:id="@+id/bt_upload"
                 android:layout_width="0dp"
@@ -80,16 +64,25 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView_repw" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="0dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_imagecnt" />
+
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/ftbt_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="10dp"
                 android:clickable="true"
                 app:backgroundTint="#FF6C92"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/contnet_layout"
+                app:layout_constraintTop_toBottomOf="@+id/recyclerView"
                 app:srcCompat="@drawable/album_img" />
 
             <EditText

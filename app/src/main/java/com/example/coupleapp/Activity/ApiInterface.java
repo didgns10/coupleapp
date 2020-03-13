@@ -30,5 +30,11 @@ public interface ApiInterface {
                                     @Field("day") String day,
                                     @Field("album") String album
     );
+    @FormUrlEncoded
+    @POST("photo_upload.php")
+    Call<PhotoClass> uploadImage2(@Field("couple_idx") String couple_idx,
+                                 @Field("image") String image,
+                                 @Field("album") String album
+    );
 
 }

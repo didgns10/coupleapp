@@ -1,46 +1,33 @@
 package com.example.coupleapp.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.coupleapp.R;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
-public class Story_Thumb_UpdateActivity extends AppCompatActivity {
+public class AlbumaddActivity extends AppCompatActivity {
+
 
     private SharedPreferences sf;
     private SharedPreferences sf_idx;
@@ -58,22 +45,10 @@ public class Story_Thumb_UpdateActivity extends AppCompatActivity {
     private static String IP_ADDRESS="13.125.232.78";  // 퍼블릭 IPv4 주소
     private static String TAG = "스토리";          // 로그에 사용할 태그
 
-    Calendar myCalendar = Calendar.getInstance();
-
-    DatePickerDialog.OnDateSetListener myDatePicker = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            myCalendar.set(Calendar.YEAR, year);
-            myCalendar.set(Calendar.MONTH, month);
-            myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            updateLabel();
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_story_thumb_update);
+        setContentView(R.layout.activity_albumadd);
 
         //로그인 저장 정보
         sf = getSharedPreferences("LOGIN",MODE_PRIVATE);
@@ -83,61 +58,26 @@ public class Story_Thumb_UpdateActivity extends AppCompatActivity {
         sf_idx =getSharedPreferences("COPLE",MODE_PRIVATE);
         couple_idx = sf_idx.getString("cople_idx","");
 
-        //인텐트로 값 받아오기
-        title = getIntent().getStringExtra("title");
-        date = getIntent().getStringExtra("date");
-
         et_story_title = findViewById(R.id.et_stroy_title);
-        et_date = findViewById(R.id.et_date);
         imageButton_back = findViewById(R.id.imageButton_back);
         bt_upload = findViewById(R.id.bt_upload);
-
-        et_story_title.setText(title);
-        et_date.setText(date);
-
-        imageButton_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-
-
-
 
         bt_upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                new_date = et_date.getText().toString();
-                new_title = et_story_title.getText().toString();
-
-                Log.e("업데이트",title);
-                Log.e("업데이트",date);
-                Log.e("업데이트",couple_idx);
-                Log.e("업데이트",new_title);
-                Log.e("업데이트",new_date);
+                title = et_story_title.getText().toString();
 
                 // 그 다음 AsyncTask 객체를 만들어 execute()한다
                 GetData task = new GetData();
 
                 // execute() 사용 시 DB의 값을 JSON 형태로 가져오는 코드가 적힌 php 파일의 경로를 적어
                 // AsyncTask로 값들을 JSON 형태로 가져올 수 있게 한다
-                task.execute( "http://" + IP_ADDRESS + "/story_thumb_update.php?couple_idx="+couple_idx+"&title="+title+"&img_day="+date+"&new_title="+new_title+"&new_img_day="+new_date, "");
+                task.execute( "http://" + IP_ADDRESS + "/album_add.php?couple_idx="+couple_idx+"&title="+title, "");
 
             }
         });
-        et_date.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new DatePickerDialog(Story_Thumb_UpdateActivity.this, myDatePicker, myCalendar.get(Calendar.YEAR),
-                        myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
-
     }
-
     /* HTTPUrlConnection을 써서 POST 방식으로 phpmyadmin DB에서 값들을 가져오는 AsyncTask 클래스 정의 */
     private class GetData extends AsyncTask<String, Void, String> {
 
@@ -151,7 +91,7 @@ public class Story_Thumb_UpdateActivity extends AppCompatActivity {
 
             // 프래그먼트에 프로그레스 다이얼로그를 띄우고, 값이 가져와지는 동안 기다리라는 메시지를 띄운다
             // 마찬가지로 프래그먼트를 쓰기 때문에 context 대신 getActivity() 사용
-            progressDialog = ProgressDialog.show(Story_Thumb_UpdateActivity.this,
+            progressDialog = ProgressDialog.show(AlbumaddActivity.this,
                     "Please Wait",
                     null,
                     true,
@@ -171,15 +111,17 @@ public class Story_Thumb_UpdateActivity extends AppCompatActivity {
             Log.e(TAG, "response - " + result);
 
             // 결과가 없으면 에러 때문에 못 받아온 거니까 에러 문구를 버튼 밑 텍스트뷰에 출력
-            if (result == null) {
-//                mTextViewResult.setText(errorString);
-            } else {
+            if (result.equals("2")) {
+
                 // 결과가 있다면 버튼 위 텍스트뷰에 JSON 데이터들을 텍스트뷰 형태에 맞게 출력한다
 
-                Toast.makeText(Story_Thumb_UpdateActivity.this,"수정이 되었습니다.",Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(Story_Thumb_UpdateActivity.this, StoryActivity.class);
+                Toast.makeText(AlbumaddActivity.this,"앨범이 추가되었습니다.",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(AlbumaddActivity.this, StoryActivity.class);
                 startActivity(intent);
                 finish();
+
+            }else if(result.equals("1")){
+                Toast.makeText(AlbumaddActivity.this,"이미 존재하는 폴더명입니다.",Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -250,11 +192,4 @@ public class Story_Thumb_UpdateActivity extends AppCompatActivity {
 
         }
     }
-    private void updateLabel() {
-        String myFormat = "yyyy-MM-dd";    // 출력형식   2018/11/28
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.KOREA);
-
-        et_date.setText(sdf.format(myCalendar.getTime()));
-    }
-
 }

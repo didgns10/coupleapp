@@ -107,7 +107,7 @@ public class StoryActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.toolbar_plus:{
-                final CharSequence[] oItems = {"스토리추가","사진추가"};
+                final CharSequence[] oItems = {"스토리추가","사진추가","앨범추가"};
 
                 AlertDialog.Builder oDialog = new AlertDialog.Builder(this,
                         android.R.style.Theme_DeviceDefault_Light_Dialog_Alert);
@@ -122,9 +122,11 @@ public class StoryActivity extends AppCompatActivity {
                                     Intent intent = new Intent(StoryActivity.this, StoryUploadActivity.class);
                                     startActivity(intent);
                                 }else if(which==1){
-
-                                    Toast.makeText(getApplicationContext(),
-                                            oItems[1], Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(StoryActivity.this, PhotoaddActivity.class);
+                                    startActivity(intent);
+                                }else if(which==2){
+                                    Intent intent = new Intent(StoryActivity.this, AlbumaddActivity.class);
+                                    startActivity(intent);
                                 }
                             }
                         })

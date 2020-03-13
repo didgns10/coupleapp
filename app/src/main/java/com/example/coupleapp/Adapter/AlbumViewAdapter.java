@@ -1,5 +1,6 @@
 package com.example.coupleapp.Adapter;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -12,24 +13,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.coupleapp.Activity.AlbumUpdateActivity;
+import com.example.coupleapp.Activity.AlbumDetailActivity;
 import com.example.coupleapp.Activity.AlbumViewActivity;
-import com.example.coupleapp.Activity.AlbumaddActivity;
-import com.example.coupleapp.Activity.StoryActivity;
+import com.example.coupleapp.Activity.StoryDetailActivity;
 import com.example.coupleapp.Activity.StoryVIewActivity;
-import com.example.coupleapp.Activity.Story_Thumb_UpdateActivity;
-import com.example.coupleapp.Model.AlbumData;
-import com.example.coupleapp.Model.StoryThumData;
+import com.example.coupleapp.Model.AlbumViewData;
 import com.example.coupleapp.R;
 
 import java.io.BufferedReader;
@@ -42,88 +39,88 @@ import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> {
-
-    private ArrayList<AlbumData> mList;
-    private Context context;
-    private SharedPreferences sf;
-    private SharedPreferences sf_idx;
-    private String email;
-    private String couple_idx;
-
+public class AlbumViewAdapter extends RecyclerView.Adapter<AlbumViewAdapter.ViewHolder> {
     private static String IP_ADDRESS="13.125.232.78";  // 퍼블릭 IPv4 주소
     private static String TAG = "스토리";          // 로그에 사용할 태그
+    private String album ;
+    private SharedPreferences sf;
+    private SharedPreferences sf_idx;
+    private String couple_idx;
 
-    public AlbumAdapter(ArrayList<AlbumData> mList, Context context) {
+
+    private ArrayList<AlbumViewData> mList;
+    private Context context;
+
+    public AlbumViewAdapter(ArrayList<AlbumViewData> mList, Context context) {
         this.mList = mList;
         this.context = context;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_album,parent,false);
+    public AlbumViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_albumview,parent,false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final AlbumViewAdapter.ViewHolder holder, final int position) {
 
-        Glide.with(context).load(mList.get(position).getAlbumtitleimg())
+        Glide.with(context).load(mList.get(position).getImg())
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .skipMemoryCache(true).into(holder.imgv_album);
-        holder.tv_album_title.setText(mList.get(position).getAlbumtitle());
+                .skipMemoryCache(true)
+                .into(holder.imgv_albumview);
+        holder.tv_img_idx.setText(mList.get(position).getImg_idx());
+        holder.tv_img.setText(mList.get(position).getImg());
+        holder.tv_album.setText(mList.get(position).getAlbum());
 
-        holder.imgv_album.setOnClickListener(new View.OnClickListener() {
+
+        album = holder.tv_album.getText().toString();
+
+        holder.imgv_albumview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, AlbumViewActivity.class);
-                intent.putExtra("album",holder.tv_album_title.getText());
+               Intent intent = new Intent(context, AlbumDetailActivity.class);
+                intent.putExtra("position",position+"");
+                intent.putExtra("img_idx",holder.tv_img_idx.getText());
+                intent.putExtra("img",holder.tv_img.getText());
+                intent.putExtra("album",holder.tv_album.getText());
                 context.startActivity(intent);
+
 
             }
         });
 
-        holder.imgv_album.setOnLongClickListener(new View.OnLongClickListener() {
+        //커플 인덱스 번호가져오기
+        sf_idx =context.getSharedPreferences("COPLE",MODE_PRIVATE);
+        couple_idx = sf_idx.getString("cople_idx","");
+
+        holder.imgv_albumview.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+
+                Log.e("로그그",holder.tv_img_idx.getText().toString());
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("옵션을 선택하세요.");
-                builder.setMessage("앨범을 수정 또는 삭제 하시겠습니까? (삭제시 안에있는 사진도 같이 삭제 됩니다.)");
+                builder.setMessage("해당 사진을 삭제 하시겠습니까?");
                 builder.setPositiveButton("삭제", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
-                        //커플 인덱스 번호가져오기
-                        sf_idx =context.getSharedPreferences("COPLE",MODE_PRIVATE);
-                        couple_idx = sf_idx.getString("cople_idx","");
-
-                        Log.e("앨범",couple_idx);
-                        Log.e("앨범",holder.tv_album_title.getText().toString());
 
                         // 그 다음 AsyncTask 객체를 만들어 execute()한다
                         GetData task = new GetData();
 
                         // execute() 사용 시 DB의 값을 JSON 형태로 가져오는 코드가 적힌 php 파일의 경로를 적어
                         // AsyncTask로 값들을 JSON 형태로 가져올 수 있게 한다
-                        task.execute( "http://" + IP_ADDRESS + "/album_delete.php?couple_idx="+couple_idx+"&title="+holder.tv_album_title.getText().toString(), "");
-
+                        task.execute( "http://" + IP_ADDRESS + "/album_photo_delete.php?img_idx="+holder.tv_img_idx.getText().toString()+"&couple_idx="+couple_idx+
+                                "&album="+album, "");
                     }
                 });
                 builder.setNeutralButton("취소", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                    }
-                });
-                builder.setNegativeButton("수정", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        Intent intent = new Intent(context, AlbumUpdateActivity.class);
-                        intent.putExtra("title",holder.tv_album_title.getText());
-                        context.startActivity(intent);
-
                     }
                 });
                 builder.create().show();
@@ -146,18 +143,18 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView imgv_album;
-        public TextView tv_album_title;
-        public ConstraintLayout constraintLayout;
-
+        public TextView tv_img_idx,tv_img,tv_album;
+        public ImageView imgv_albumview;
+        public CardView cardView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            imgv_album = (ImageView)itemView.findViewById(R.id.imgv_album);
-            tv_album_title = (TextView)itemView.findViewById(R.id.tv_album_title);
-            constraintLayout = (ConstraintLayout) itemView.findViewById(R.id.constraintlayout);
 
-
+            tv_album = (TextView)itemView.findViewById(R.id.tv_album);
+            imgv_albumview = (ImageView)itemView.findViewById(R.id.imgv_albumview);
+            tv_img_idx = (TextView)itemView.findViewById(R.id.tv_img_idx);
+            tv_img = (TextView)itemView.findViewById(R.id.tv_img);
+            cardView =(CardView) itemView.findViewById(R.id.card_view);
         }
     }
     /* HTTPUrlConnection을 써서 POST 방식으로 phpmyadmin DB에서 값들을 가져오는 AsyncTask 클래스 정의 */
@@ -198,8 +195,12 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
             } else {
                 // 결과가 있다면 버튼 위 텍스트뷰에 JSON 데이터들을 텍스트뷰 형태에 맞게 출력한다
 
-                Toast.makeText(context,"앨범이 삭제 되었습니다.",Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(context, StoryActivity.class);
+                Toast.makeText(context,"사진이 삭제 되었습니다.",Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(context, AlbumViewActivity.class);
+                intent.addFlags(intent.FLAG_ACTIVITY_NO_ANIMATION);
+                intent.putExtra("album",album);
+                ((Activity)context).finish();
                 context.startActivity(intent);
             }
         }
@@ -212,6 +213,9 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
 //            Log.e("params[0] : ", params[0].toString());
             String postParameters = params[1];  // HttpUrlConnection 결과로 얻은 Request body에 담긴 내용들을 저장할 변수
 //            Log.e("params[1] : ", params[1].toString());
+
+            Log.e("로그그",serverURL);
+            Log.e("로그그",postParameters);
 
 
             try {
@@ -271,4 +275,8 @@ public class AlbumAdapter extends RecyclerView.Adapter<AlbumAdapter.ViewHolder> 
 
         }
     }
+
+
 }
+
+

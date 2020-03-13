@@ -92,6 +92,12 @@ public class StoryViewAdapter extends RecyclerView.Adapter<StoryViewAdapter.View
         holder.imgv_storyview.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+
+                Log.e("로그그",holder.tv_img_idx.getText().toString());
+                Log.e("로그그",title);
+                Log.e("로그그",img_day);
+
+
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("옵션을 선택하세요.");
                 builder.setMessage("해당 사진을 삭제 하시겠습니까?");
@@ -104,7 +110,7 @@ public class StoryViewAdapter extends RecyclerView.Adapter<StoryViewAdapter.View
 
                         // execute() 사용 시 DB의 값을 JSON 형태로 가져오는 코드가 적힌 php 파일의 경로를 적어
                         // AsyncTask로 값들을 JSON 형태로 가져올 수 있게 한다
-                        task.execute( "http://" + IP_ADDRESS + "/story_photo_delete.php?img_idx="+holder.tv_img_idx.getText().toString(), "");
+                        task.execute( "http://" + IP_ADDRESS + "/story_photo_delete.php?img_idx="+holder.tv_img_idx.getText().toString()+"&title="+title+"&img_day="+img_day, "");
                     }
                 });
                 builder.setNeutralButton("취소", new DialogInterface.OnClickListener() {
@@ -209,6 +215,9 @@ public class StoryViewAdapter extends RecyclerView.Adapter<StoryViewAdapter.View
 //            Log.e("params[0] : ", params[0].toString());
             String postParameters = params[1];  // HttpUrlConnection 결과로 얻은 Request body에 담긴 내용들을 저장할 변수
 //            Log.e("params[1] : ", params[1].toString());
+
+            Log.e("로그그",serverURL);
+            Log.e("로그그",postParameters);
 
 
             try {

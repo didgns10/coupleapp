@@ -1,6 +1,8 @@
 package com.example.coupleapp.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -19,6 +21,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.coupleapp.Adapter.SelectImageAdapter;
+import com.example.coupleapp.Model.SelectImageData;
 import com.example.coupleapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -57,6 +61,9 @@ public class StoryAlbumAddActivity extends AppCompatActivity {
     private boolean size=false;
 
 
+    private RecyclerView recyclerView;
+    private ArrayList<SelectImageData> selectlist;
+    private SelectImageAdapter selectImageAdapter;
 
 
     @Override
@@ -82,6 +89,8 @@ public class StoryAlbumAddActivity extends AppCompatActivity {
         imageButton_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(StoryAlbumAddActivity.this,StoryActivity.class);
+                startActivity(intent);
                 finish();
             }
         });
@@ -94,6 +103,7 @@ public class StoryAlbumAddActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 arrayList.clear();
+                selectlist.clear();
                 showChooser();
             }
         });
@@ -108,6 +118,17 @@ public class StoryAlbumAddActivity extends AppCompatActivity {
 
         //비트맵의 어레이 리스트를 생성한다.
         arrayList = new ArrayList<>();
+        selectlist = new ArrayList<>();
+
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+
+        selectImageAdapter = new SelectImageAdapter(selectlist,StoryAlbumAddActivity.this);
+        recyclerView.setAdapter(selectImageAdapter);
+
+        selectlist.clear();
+        selectImageAdapter.notifyDataSetChanged();
     }
     //이미지를 선택하는 함수구현
     private void showChooser() {
@@ -136,6 +157,11 @@ public class StoryAlbumAddActivity extends AppCompatActivity {
                                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),imageUri); //그다음 해당 uri의 비트맵에 저장을하고
                                 bitmap = Bitmap.createScaledBitmap(bitmap,700,900,true);
                                 arrayList.add(bitmap); //비트맵 배열에 담는다.
+                                SelectImageData selectImageData = new SelectImageData();
+
+                                selectImageData.setBitmap(bitmap);
+                                selectlist.add(selectImageData);
+                                selectImageAdapter.notifyDataSetChanged();
                                 size=true;
 
                             } catch (Exception e) {
@@ -150,6 +176,11 @@ public class StoryAlbumAddActivity extends AppCompatActivity {
                             Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),uri);
                             bitmap = Bitmap.createScaledBitmap(bitmap,700,900,true);
                             arrayList.add(bitmap);
+                            SelectImageData selectImageData = new SelectImageData();
+
+                            selectImageData.setBitmap(bitmap);
+                            selectlist.add(selectImageData);
+                            selectImageAdapter.notifyDataSetChanged();
                             tv_imagecnt.setText("사진 총 "+arrayList.size()+"개");
                             size=false;
 

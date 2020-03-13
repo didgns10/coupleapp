@@ -22,14 +22,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Activity.StoryAlbumAddActivity"></activity>
+        <activity android:name=".Activity.AlbumDetailActivity"></activity>
+        <activity android:name=".Activity.AlbumViewActivity" />
+        <activity android:name=".Activity.AlbumUpdateActivity" />
+        <activity android:name=".Activity.PhotoaddActivity" />
+        <activity android:name=".Activity.AlbumaddActivity" />
+        <activity android:name=".Activity.StoryAlbumAddActivity" />
         <activity android:name=".Activity.Story_Thumb_UpdateActivity" />
-        <activity android:name=".Activity.StoryDetailActivity"
-            android:launchMode="singleInstance"/>
-        <activity android:name=".Activity.StoryVIewActivity"
-            android:launchMode="singleInstance"/>
+        <activity
+            android:name=".Activity.StoryDetailActivity"
+            android:launchMode="singleInstance" />
+        <activity
+            android:name=".Activity.StoryVIewActivity"
+            android:launchMode="singleInstance" />
         <activity android:name=".Activity.StoryUploadActivity" />
-        <activity android:name=".Activity.StoryActivity"
+        <activity
+            android:name=".Activity.StoryActivity"
             android:launchMode="singleInstance" />
         <activity android:name=".Activity.MainActivity">
 
