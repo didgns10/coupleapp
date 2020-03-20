@@ -11,7 +11,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,6 +28,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.coupleapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,9 +43,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -63,9 +62,14 @@ public class MainActivity extends AppCompatActivity {
     private TextView tv_logout;
 
     private String email;
+    private String name;
+    private String imgurl;
+    private String opp_imgurl;
+    private String opp_name;
 
     private SharedPreferences sf;
     private SharedPreferences sf_idx;
+    private SharedPreferences sf_name;
 
     private TextView tv_manname;
     private TextView tv_womanname;
@@ -89,6 +93,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
 
         //로그인 저장 정보
@@ -143,10 +149,31 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         //Json
 
         GetData task = new GetData();
         task.execute( "http://" + IP_ADDRESS + "/coupledata.php?email="+email, "");
+
+        GetData1 task1 = new GetData1();
+        task1.execute( "http://" + IP_ADDRESS + "/user_infomation.php?email="+email, "");
+
+        GetData2 task2 = new GetData2();
+        task2.execute( "http://" + IP_ADDRESS + "/opp_user_infomation.php?email="+email, "");
+
+        ftbt_chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,ChatActivity.class);
+                intent.putExtra("opp_imgurl",opp_imgurl);
+                intent.putExtra("opp_name",opp_name);
+                intent.putExtra("myname",name);
+                intent.putExtra("myimgurl",imgurl);
+                startActivity(intent);
+
+            }
+        });
 
         //네이게이션 버튼 눌렀을때 처리해주는 ㄱ부분
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -444,6 +471,278 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
 
             Log.d(TAG, "showResult : ", e);
+        }
+    }
+    //json 데이터 가져오는  부분
+    private class GetData1 extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+        String errorString = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+/*            progressDialog = ProgressDialog.show(Program.this,
+                    "Please Wait", null, true, true);*/
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            // progressDialog.dismiss();
+
+            Log.d(TAG, "response - " + result);
+
+            if (result == null){
+
+            }
+            else {
+
+                mJsonString = result;
+                showResult1();
+            }
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String serverURL = params[0];
+            String postParameters = params[1];
+
+
+            try {
+
+                URL url = new URL(serverURL);
+                Log.e("확인",serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if(responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                }
+                else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while((line = bufferedReader.readLine()) != null){
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString().trim();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "GetData : Error ", e);
+                errorString = e.toString();
+
+                return null;
+            }
+
+        }
+    }
+
+
+    private void showResult1() {
+
+        String TAG_JSON1="users";                         // JSON 배열의 이름
+        String TAG_MYNAME = "name";
+        String TAG_IMGURL = "imgurl";
+
+        try {
+
+            // JSON 배열로 받아오기 위해 JSONObject, JSONArray 차례로 선언
+            JSONObject jsonObject1 = new JSONObject(mJsonString);
+
+            // JSONArray에는 root를 넣어서 root란 이름의 JSON 배열을 가져올 수 있도록 한다
+            JSONArray jsonArray1 = jsonObject1.getJSONArray(TAG_JSON1);
+
+            // for문으로 JSONArray의 길이만큼 반복해서 String 변수에 담는다
+            for(int i = 0; i < jsonArray1.length(); i++){
+
+                JSONObject item = jsonArray1.getJSONObject(i);
+
+                imgurl = item.getString(TAG_IMGURL);
+                name = item.getString(TAG_MYNAME);
+                SharedPreferences appData = getSharedPreferences("CHAT",MODE_PRIVATE);
+                SharedPreferences.Editor editor = appData.edit();
+                editor.putString("name", name);
+                editor.putString("imgurl",imgurl);
+                editor.apply();
+                Log.e("로그3",name);
+                Log.e("로그3",imgurl);
+            }
+
+        } catch (JSONException e) {
+            // 에러 뜨면 결과 출력
+            Log.e(TAG, "showResult : ", e);
+        }
+    }
+
+    //json 데이터 가져오는  부분
+    private class GetData2 extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+        String errorString = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+/*            progressDialog = ProgressDialog.show(Program.this,
+                    "Please Wait", null, true, true);*/
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            // progressDialog.dismiss();
+
+            Log.d(TAG, "response - " + result);
+
+            if (result == null){
+
+            }
+            else {
+
+                mJsonString = result;
+                showResult2();
+            }
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String serverURL = params[0];
+            String postParameters = params[1];
+
+
+            try {
+
+                URL url = new URL(serverURL);
+                Log.e("확인",serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if(responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                }
+                else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while((line = bufferedReader.readLine()) != null){
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString().trim();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "GetData : Error ", e);
+                errorString = e.toString();
+
+                return null;
+            }
+
+        }
+    }
+
+
+    private void showResult2() {
+
+        String TAG_JSON1="opp_users";                         // JSON 배열의 이름
+        String TAG_OPPNAME = "name";
+        String TAG_IMGURL = "imgurl";
+
+        try {
+
+            // JSON 배열로 받아오기 위해 JSONObject, JSONArray 차례로 선언
+            JSONObject jsonObject1 = new JSONObject(mJsonString);
+
+            // JSONArray에는 root를 넣어서 root란 이름의 JSON 배열을 가져올 수 있도록 한다
+            JSONArray jsonArray1 = jsonObject1.getJSONArray(TAG_JSON1);
+
+            // for문으로 JSONArray의 길이만큼 반복해서 String 변수에 담는다
+            for(int i = 0; i < jsonArray1.length(); i++){
+
+                JSONObject item = jsonArray1.getJSONObject(i);
+
+                opp_imgurl = item.getString(TAG_IMGURL);
+                opp_name = item.getString(TAG_OPPNAME);
+                SharedPreferences appData = getSharedPreferences("CHAT",MODE_PRIVATE);
+                SharedPreferences.Editor editor = appData.edit();
+                editor.putString("opp_name", opp_name);
+                editor.putString("opp_imgurl",opp_imgurl);
+                editor.apply();
+
+                Log.e("로그3",opp_imgurl);
+                Log.e("로그3",opp_name);
+            }
+
+        } catch (JSONException e) {
+            // 에러 뜨면 결과 출력
+            Log.e(TAG, "showResult : ", e);
         }
     }
 

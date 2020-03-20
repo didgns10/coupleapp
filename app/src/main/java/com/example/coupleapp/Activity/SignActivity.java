@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.coupleapp.R;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -34,6 +35,7 @@ public class SignActivity extends AppCompatActivity {
     private TextView mTextViewResult;
     private String email;
     private String password;
+    private String token;
 
 
 
@@ -42,7 +44,9 @@ public class SignActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign);
 
+         token = FirebaseInstanceId.getInstance().getToken();
 
+        Log.e("토큰1",token);
 
         et_email = (EditText)findViewById(R.id.et_email);
         et_password = (EditText)findViewById(R.id.et_password);
@@ -60,7 +64,7 @@ public class SignActivity extends AppCompatActivity {
                  password = et_password.getText().toString().trim();
 
                 InsertData task = new InsertData();
-                task.execute("http://" + IP_ADDRESS + "/insert.php", email,password);
+                task.execute("http://" + IP_ADDRESS + "/insert.php", email,password,token);
 
 
 
@@ -121,6 +125,8 @@ public class SignActivity extends AppCompatActivity {
             Log.d(TAG, "POST response  - " + email);
             String password = (String)params[2];
             Log.d(TAG, "POST response  - " + password);
+            String token = (String)params[3];
+            Log.d(TAG, "POST response  - " + token);
 
             // 1. PHP 파일을 실행시킬 수 있는 주소와 전송할 데이터를 준비합니다.
 
@@ -136,7 +142,7 @@ public class SignActivity extends AppCompatActivity {
 
             // 여기에 적어준 이름을 나중에 PHP에서 사용하여 값을 얻게 됩니다.
 
-            String postParameters = "email=" + email + "&password=" + password;
+            String postParameters = "email=" + email + "&password=" + password+ "&token="+ token;
             Log.d(TAG, "postParameters  - " + postParameters);
 
             try {

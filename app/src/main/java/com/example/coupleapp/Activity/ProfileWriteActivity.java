@@ -206,6 +206,8 @@ public class ProfileWriteActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = grant.edit();
                     editor.putBoolean("SIGNOK" + email, true);
                     editor.apply();
+
+
                     Toast.makeText(ProfileWriteActivity.this,"회원가입을 완료했습니다.",Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(ProfileWriteActivity.this, MainActivity.class);

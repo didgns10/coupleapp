@@ -68,6 +68,9 @@ public class AlbumaddActivity extends AppCompatActivity {
 
                 title = et_story_title.getText().toString();
 
+                Log.e("앨범",title);
+                Log.e("앨범",couple_idx);
+
                 // 그 다음 AsyncTask 객체를 만들어 execute()한다
                 GetData task = new GetData();
 
