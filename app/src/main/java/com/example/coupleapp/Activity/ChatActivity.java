@@ -10,13 +10,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +35,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -54,6 +60,8 @@ public class ChatActivity extends AppCompatActivity {
     private EditText messageBox;
     private TextView send ;
     private WebSocket webSocket;
+    private ImageButton img_button;
+
 
     private MessageAdapter mAdapter;
     private ArrayList<MessageData> mArrayList;
@@ -72,15 +80,14 @@ public class ChatActivity extends AppCompatActivity {
     private String oppname;
     private String opp_imgurl;
     private String message;
-    private String image="none";
+    private String images="none";
     private Call<MessageClass> call;
 
 
     private static String IP_ADDRESS="13.125.232.78";  // 퍼블릭 IPv4 주소
     private static String TAG = "스토리";          // 로그에 사용할 태그
     private String mJsonString;                         // JSON 값을 저장할 String 변수
-    private String mJsonString1;                         // JSON 값을 저장할 String 변수
-    private String mJsonString2;                         // JSON 값을 저장할 String 변수
+    private int IMAGE_REQUEST_ID = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +138,7 @@ public class ChatActivity extends AppCompatActivity {
 
         messageBox = findViewById(R.id.messageBox);
         send = findViewById(R.id.send);
+        img_button = findViewById(R.id.img_button);
 
         //현재 시간을 구하는 메소드
         // 현재시간을 msec 으로 구한다.
@@ -147,12 +155,17 @@ public class ChatActivity extends AppCompatActivity {
         instantiateWebSocket();
 
         mArrayList = new ArrayList<>();
+        mArrayList.clear();
+        GetData task = new GetData();
+
+        // execute() 사용 시 DB의 값을 JSON 형태로 가져오는 코드가 적힌 php 파일의 경로를 적어
+        // AsyncTask로 값들을 JSON 형태로 가져올 수 있게 한다
+        task.execute( "http://" + IP_ADDRESS + "/message.php?couple_idx="+couple_idx+"&email="+email+"&opp_name="+oppname, "");
 
         mAdapter = new MessageAdapter(mArrayList,ChatActivity.this);
         recyclerView.setAdapter(mAdapter);
         recyclerView.scrollToPosition(mAdapter.getItemCount() - 1);
 
-        mArrayList.clear();
         mAdapter.notifyDataSetChanged();
 
         send.setOnClickListener(new View.OnClickListener() {
@@ -162,6 +175,7 @@ public class ChatActivity extends AppCompatActivity {
                 String server = "send";
 
                 if(!message.isEmpty()){
+                    images = "none";
                     uploadMessage();
                     JSONObject jsonObject = new JSONObject();
                     try {
@@ -171,6 +185,7 @@ public class ChatActivity extends AppCompatActivity {
                         jsonObject.put("email",email);
                         jsonObject.put("name",name);
                         jsonObject.put("imgurl",imgurl);
+                        jsonObject.put("image", "");
                         jsonObject.put("byServer",server);
 
                         Log.e("로그",message);
@@ -201,6 +216,17 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        img_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+
+                startActivityForResult(Intent.createChooser(intent, "Pick image"),
+                        IMAGE_REQUEST_ID);
+            }
+        });
+
     }
 
     //뒤로가기 버튼 눌렀을때
@@ -219,25 +245,97 @@ public class ChatActivity extends AppCompatActivity {
         super.onResume();
         // 그 다음 AsyncTask 객체를 만들어 execute()한다
 
-        mArrayList.clear();
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         GetData task = new GetData();
 
         // execute() 사용 시 DB의 값을 JSON 형태로 가져오는 코드가 적힌 php 파일의 경로를 적어
         // AsyncTask로 값들을 JSON 형태로 가져올 수 있게 한다
-        task.execute( "http://" + IP_ADDRESS + "/message.php?couple_idx="+couple_idx+"&email="+email, "");
+        task.execute( "http://" + IP_ADDRESS + "/message.php?couple_idx="+couple_idx+"&email="+email+"&opp_name="+oppname, "");
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == IMAGE_REQUEST_ID && resultCode == RESULT_OK) {
+
+            try {
+                InputStream is = getContentResolver().openInputStream(data.getData());
+                Bitmap image = BitmapFactory.decodeStream(is);
+
+                sendImage(image);
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+    }
+    private void sendImage(Bitmap image) {
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        image.compress(Bitmap.CompressFormat.JPEG, 50, outputStream);
+
+        String base64String = Base64.encodeToString(outputStream.toByteArray(),
+                Base64.DEFAULT);
+
+        message = "none";
+        images = base64String;
+        uploadMessage();
+
+        JSONObject jsonObject = new JSONObject();
+        String server = "send";
+        String message = "";
+        try {
+            jsonObject.put("couple_idx",couple_idx);
+            jsonObject.put("date",formatDate);
+            jsonObject.put("email",email);
+            jsonObject.put("name",name);
+            jsonObject.put("message","");
+            jsonObject.put("byServer",server);
+            jsonObject.put("imgurl",imgurl);
+            jsonObject.put("image", base64String);
+
+            webSocket.send(jsonObject.toString());
+
+            MessageData messageData = new MessageData();
+
+            messageData.setMessage(message);
+            messageData.setBit_image(image);
+            messageData.setDatetime(formatDate);
+            messageData.setServer(server);
+
+
+            mArrayList.add(messageData);
+            mAdapter.notifyDataSetChanged();
+            recyclerView.scrollToPosition(mAdapter.getItemCount() - 1);
+
+            recyclerView.smoothScrollToPosition(mAdapter.getItemCount() - 1);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+    private Bitmap getBitmapFromString(String image) {
+
+        byte[] bytes = Base64.decode(image, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
 
 
     //메세지 디비 적용과정
     private void uploadMessage(){
-        if(image.equals("none")){
-            ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-             call = apiInterface.uploadMessage(couple_idx,image,name,message,formatDate,email);
-        }else{
-            ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
-             call = apiInterface.uploadMessage(couple_idx,image,name,message,formatDate,email);
-        }
+
+        ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
+        call = apiInterface.uploadMessage(couple_idx,images,name,message,formatDate,email);
+
 
 
         call.enqueue(new Callback<MessageClass>() {
@@ -299,39 +397,70 @@ public class ChatActivity extends AppCompatActivity {
                         String name =(String)jsonObject.get("name");
                         String email=(String)jsonObject.get("email");
                         String date=(String)jsonObject.get("date");
-                        String imgurl=(String)jsonObject.get("imgurl");
+                        String image=(String)jsonObject.get("image");
                         String server="receive";
 
                         if(couple_idx1.equals(couple_idx)){
-                            jsonObject.put("message",(String)jsonObject.get("message"));
-                            jsonObject.put("couple_idx",(String)jsonObject.get("couple_idx"));
-                            jsonObject.put("name",(String)jsonObject.get("name"));
-                            jsonObject.put("email",(String)jsonObject.get("email"));
-                            jsonObject.put("date",(String)jsonObject.get("date"));
-                            jsonObject.put("imgurl",(String)jsonObject.get("imgurl"));
-                            jsonObject.put("byServer","receive");
 
-                            Log.e("로그1",message);
-                            Log.e("로그1",couple_idx1);
-                            Log.e("로그1",date);
-                            Log.e("로그1",email);
-                            Log.e("로그1",name);
-                            Log.e("로그1",imgurl);
-                            Log.e("로그1",jsonObject.toString());
+                            if(image.equals("")) {
+                                jsonObject.put("message", (String) jsonObject.get("message"));
+                                jsonObject.put("couple_idx", (String) jsonObject.get("couple_idx"));
+                                jsonObject.put("name", (String) jsonObject.get("name"));
+                                jsonObject.put("email", (String) jsonObject.get("email"));
+                                jsonObject.put("date", (String) jsonObject.get("date"));
+                                jsonObject.put("imgurl",(String)jsonObject.get("imgurl"));
+                                jsonObject.put("byServer", "receive");
 
-                            MessageData messageData = new MessageData();
+                                Log.e("로그1", message);
+                                Log.e("로그1", couple_idx1);
+                                Log.e("로그1", date);
+                                Log.e("로그1", email);
+                                Log.e("로그1", name);
+                                Log.e("로그1",imgurl);
+                                Log.e("로그1", jsonObject.toString());
 
-                            messageData.setMessage(message);
-                            messageData.setDatetime(date);
-                            messageData.setName(name);
-                            messageData.setServer(server);
-                            messageData.setOpp_profile_img(imgurl);
+                                MessageData messageData = new MessageData();
 
-                            mArrayList.add(messageData);
-                            mAdapter.notifyDataSetChanged();
-                            recyclerView.scrollToPosition(mAdapter.getItemCount() - 1);
+                                messageData.setMessage(message);
+                                messageData.setDatetime(date);
+                                messageData.setName(name);
+                                messageData.setServer(server);
+                                messageData.setOpp_profile_img(opp_imgurl);
+
+                                mArrayList.add(messageData);
+                                mAdapter.notifyDataSetChanged();
+                                recyclerView.scrollToPosition(mAdapter.getItemCount() - 1);
+                            }else if(message.equals("")){
+                                jsonObject.put("image", (String) jsonObject.get("image"));
+                                jsonObject.put("couple_idx", (String) jsonObject.get("couple_idx"));
+                                jsonObject.put("name", (String) jsonObject.get("name"));
+                                jsonObject.put("email", (String) jsonObject.get("email"));
+                                jsonObject.put("date", (String) jsonObject.get("date"));
+                                jsonObject.put("imgurl",(String)jsonObject.get("imgurl"));
+                                jsonObject.put("byServer", "receive");
+
+                                Log.e("로그1", image);
+                                Log.e("로그1", couple_idx1);
+                                Log.e("로그1", date);
+                                Log.e("로그1", email);
+                                Log.e("로그1", name);
+                                Log.e("로그1", jsonObject.toString());
+
+                                Bitmap bitmap = getBitmapFromString(image);
+                                MessageData messageData = new MessageData();
+
+                                messageData.setMessage("");
+                                messageData.setBit_image(bitmap);
+                                messageData.setDatetime(date);
+                                messageData.setName(name);
+                                messageData.setServer(server);
+                                messageData.setOpp_profile_img(opp_imgurl);
+
+                                mArrayList.add(messageData);
+                                mAdapter.notifyDataSetChanged();
+                                recyclerView.scrollToPosition(mAdapter.getItemCount() - 1);
+                            }
                         }
-
 
 
                     } catch (JSONException e) {
@@ -512,6 +641,7 @@ public class ChatActivity extends AppCompatActivity {
                 messageData.setName(name);
                 messageData.setEmail(email);
                 messageData.setServer(server);
+                messageData.setImage(image);
                 messageData.setOpp_profile_img(opp_imgurl);
 
 

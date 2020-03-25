@@ -155,6 +155,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
                     android:text="상대방과 공유하는 메인 화면입니다."
+                    android:visibility="gone"
                     app:layout_constraintBottom_toTopOf="@+id/ftbt_chat"
                     app:layout_constraintEnd_toEndOf="@+id/img_main"
                     app:layout_constraintStart_toStartOf="parent"
@@ -166,6 +167,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="둘만의 사진을 올려보세요!"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_1" />
@@ -181,8 +183,36 @@
                     app:layout_constraintBottom_toBottomOf="@+id/img_main"
                     app:layout_constraintStart_toStartOf="parent"
                     app:srcCompat="@drawable/album_img" />
+
+                <TextView
+                    android:id="@+id/tv_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="46dp"
+                    android:layout_marginBottom="42dp"
+                    android:background="#00FAFAFA"
+                    android:text="1"
+                    android:textColor="#F00E0E"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/ftbt_chat"
+                    app:layout_constraintStart_toStartOf="@+id/ftbt_chat" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/ibtn_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="13dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="#00FFFFFF"
+            app:srcCompat="@drawable/ic_video" />
 
     </RelativeLayout>
     <com.google.android.material.navigation.NavigationView

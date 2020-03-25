@@ -113,6 +113,8 @@ public class ProfileWriteActivity extends AppCompatActivity {
         email = sf.getString("et_email","");
         Log.e("login",email);
 
+
+
         //프로필 설정이 완료된경우
         SharedPreferences sign_ok = getSharedPreferences("SIGNOK",MODE_PRIVATE);
         signok = sign_ok.getBoolean("SIGNOK"+email,false);
@@ -210,7 +212,7 @@ public class ProfileWriteActivity extends AppCompatActivity {
 
                     Toast.makeText(ProfileWriteActivity.this,"회원가입을 완료했습니다.",Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(ProfileWriteActivity.this, MainActivity.class);
+                    Intent intent = new Intent(ProfileWriteActivity.this, VideoTokenActivity.class);
                     startActivity(intent);
                     finish();
                 }else{

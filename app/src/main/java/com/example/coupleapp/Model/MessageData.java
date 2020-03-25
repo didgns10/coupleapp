@@ -1,8 +1,11 @@
 package com.example.coupleapp.Model;
 
+import android.graphics.Bitmap;
+
 public class MessageData {
     private String message;
     private String image;
+    private Bitmap bit_image;
     private String couple_idx;
     private String message_idx;
     private String opp_profile_img;
@@ -12,7 +15,7 @@ public class MessageData {
     private String email;
 
 
-    public MessageData(String message, String image, String couple_idx, String message_idx, String opp_profile_img, String datetime, String name, String server, String email) {
+    public MessageData(String message, String image, String couple_idx, String message_idx, String opp_profile_img, String datetime, String name, String server, String email,Bitmap bit_image) {
         this.message = message;
         this.image = image;
         this.couple_idx = couple_idx;
@@ -22,6 +25,15 @@ public class MessageData {
         this.name = name;
         this.server = server;
         this.email = email;
+        this.bit_image = bit_image;
+    }
+
+    public Bitmap getBit_image() {
+        return bit_image;
+    }
+
+    public void setBit_image(Bitmap bit_image) {
+        this.bit_image = bit_image;
     }
 
     public String getEmail() {

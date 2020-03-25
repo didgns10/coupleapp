@@ -14,6 +14,7 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,12 +26,22 @@
         android:layout_alignParentRight="true"
         android:layout_margin="8dp"/>
 
+    <ImageButton
+        android:id="@+id/img_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:background="#00FFFFFF"
+        android:src="@drawable/ic_add_circle_black_24dp"></ImageButton>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="메세지를 입력하세요."
         android:id="@+id/messageBox"
         android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/img_button"
         android:layout_toLeftOf="@+id/send"/>
 
     <androidx.recyclerview.widget.RecyclerView

@@ -19,6 +19,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
     private DrawerLayout mDrawerLayout;
 
-    private TextView tv_logout;
+    private TextView tv_logout,tv_count;
 
     private String email;
     private String name;
@@ -83,19 +84,44 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton ftbt_background;
     private TextView tv_1;
     private TextView tv_2;
+    private ImageButton ibtn_video;
 
     private static final int IMG_REQUEST = 777;
     private Bitmap bitmap;
     private String main_img;
     private String couple_idx;
 
+    private Boolean signok;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+         String token = FirebaseInstanceId.getInstance().getToken();
 
+        Log.e("토큰1",token);
 
+        SharedPreferences g = getSharedPreferences("LOGIN",MODE_PRIVATE);
+        boolean saveLoginData = g.getBoolean("SAVE_LOGIN_DATA",false);
+        Log.e("login",saveLoginData+"");
+
+        if(saveLoginData==false){
+            Intent intent = new Intent(MainActivity.this, StartpageActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+/*        //프로필 설정이 완료된경우
+        SharedPreferences sign_ok = getSharedPreferences("SIGNOK",MODE_PRIVATE);
+        signok = sign_ok.getBoolean("SIGNOK"+email,false);
+        Log.e("signok",signok+"");
+
+        if(signok==false){
+            Intent intent = new Intent(MainActivity.this, ConnectionActivity.class);
+            startActivity(intent);
+            finish();
+        }*/
 
         //로그인 저장 정보
         sf = getSharedPreferences("LOGIN",MODE_PRIVATE);
@@ -127,6 +153,16 @@ public class MainActivity extends AppCompatActivity {
         ftbt_background=(FloatingActionButton)findViewById(R.id.ftbt_background);
         tv_1=(TextView)findViewById(R.id.tv_1);
         tv_2 =(TextView)findViewById(R.id.tv_2);
+        tv_count=findViewById(R.id.tv_count);
+        ibtn_video=findViewById(R.id.ibtn_video);
+
+        ibtn_video.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this,VideoChatActivity.class);
+                startActivity(intent);
+            }
+        });
 
         tv_logout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,6 +197,8 @@ public class MainActivity extends AppCompatActivity {
 
         GetData2 task2 = new GetData2();
         task2.execute( "http://" + IP_ADDRESS + "/opp_user_infomation.php?email="+email, "");
+
+
 
         ftbt_chat.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,6 +248,14 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        GetData3 task3 = new GetData3();
+        task3.execute( "http://" + IP_ADDRESS + "/message_read.php?couple_idx="+couple_idx+"&email="+email, "");
     }
 
     //프로필 버튼을 클릭하게 되면 앨범에서 선택하게 해주는 함수
@@ -745,6 +791,111 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "showResult : ", e);
         }
     }
+    //json 데이터 가져오는  부분
+    private class GetData3 extends AsyncTask<String, Void, String> {
+
+        ProgressDialog progressDialog;
+        String errorString = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+/*            progressDialog = ProgressDialog.show(Program.this,
+                    "Please Wait", null, true, true);*/
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            // progressDialog.dismiss();
+
+            Log.d(TAG, "response - " + result);
+
+            if (result == null){
+
+            }
+            else {
+                if(result.equals("0")){
+                    tv_count.setVisibility(View.GONE);
+
+                }else {
+                    tv_count.setVisibility(View.VISIBLE);
+                    tv_count.setText(result);
+                }
+
+            }
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String serverURL = params[0];
+            String postParameters = params[1];
+
+
+            try {
+
+                URL url = new URL(serverURL);
+                Log.e("확인",serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if(responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                }
+                else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while((line = bufferedReader.readLine()) != null){
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString().trim();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "GetData : Error ", e);
+                errorString = e.toString();
+
+                return null;
+            }
+
+        }
+    }
+
+
 
     //날짜를 계산해주는 함수식
     public int caldate(int myear, int mmonth, int mday) {
