@@ -94,6 +94,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+
         //로그인 저장 정보
         sfc = getSharedPreferences("CHAT",MODE_PRIVATE);
         name = sfc.getString("name","");
@@ -244,13 +245,20 @@ public class ChatActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // 그 다음 AsyncTask 객체를 만들어 execute()한다
-
+        SharedPreferences appData = getSharedPreferences("CHAT_ON",MODE_PRIVATE);
+        SharedPreferences.Editor editor = appData.edit();
+        editor.putBoolean("chat_on", true);
+        editor.apply();
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        SharedPreferences appData = getSharedPreferences("CHAT_ON",MODE_PRIVATE);
+        SharedPreferences.Editor editor = appData.edit();
+        editor.putBoolean("chat_on", false);
+        editor.apply();
         GetData task = new GetData();
 
         // execute() 사용 시 DB의 값을 JSON 형태로 가져오는 코드가 적힌 php 파일의 경로를 적어

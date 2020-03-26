@@ -2,13 +2,19 @@ package com.example.coupleapp.Activity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -26,6 +32,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.coupleapp.FirebaseMessagingService;
 import com.example.coupleapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -93,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
 
     private Boolean signok;
 
+    private String message="";
+
+    private boolean test;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,6 +111,8 @@ public class MainActivity extends AppCompatActivity {
          String token = FirebaseInstanceId.getInstance().getToken();
 
         Log.e("토큰1",token);
+
+
 
         SharedPreferences g = getSharedPreferences("LOGIN",MODE_PRIVATE);
         boolean saveLoginData = g.getBoolean("SAVE_LOGIN_DATA",false);
@@ -122,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }*/
+
 
         //로그인 저장 정보
         sf = getSharedPreferences("LOGIN",MODE_PRIVATE);
@@ -159,8 +172,42 @@ public class MainActivity extends AppCompatActivity {
         ibtn_video.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,VideoChatActivity.class);
-                startActivity(intent);
+                if (message.equals("1")) {
+                    Intent intent = new Intent(MainActivity.this, VideoChatActivity.class);
+                    intent.putExtra("start", "2");
+                    startActivity(intent);
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                    builder.setTitle(opp_name + "님과 영상통화를 하시겠습니까?").setMessage("");
+
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            GetData4 task4 = new GetData4();
+                            task4.execute("http://" + IP_ADDRESS + "/video_call.php?email=" + email + "&couple_idx=" + couple_idx + "&name=" + name, "");
+
+                            Intent intent = new Intent(MainActivity.this, VideoChatActivity.class);
+                            intent.putExtra("start", "1");
+                            startActivity(intent);
+
+                        }
+
+                    });
+
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    });
+
+
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+
+                }
             }
         });
 
@@ -254,9 +301,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+
+        LocalBroadcastManager.getInstance(this).registerReceiver( mMessageReceiver, new IntentFilter("custom-event-name"));
         GetData3 task3 = new GetData3();
         task3.execute( "http://" + IP_ADDRESS + "/message_read.php?couple_idx="+couple_idx+"&email="+email, "");
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        LocalBroadcastManager.getInstance(this).unregisterReceiver( mMessageReceiver);
+
+    }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override public void onReceive(Context context, Intent intent) {
+            // TODO Auto-generated method stub
+            // Get extra data included in the Intent
+            message = intent.getStringExtra("start");
+            Log.d("receiver", "Got message: " + message);
+
+        }
+    };
 
     //프로필 버튼을 클릭하게 되면 앨범에서 선택하게 해주는 함수
     private void seletImage(){
@@ -894,7 +961,102 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+    //json 데이터 가져오는  부분
+    private class GetData4 extends AsyncTask<String, Void, String> {
 
+        ProgressDialog progressDialog;
+        String errorString = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+/*            progressDialog = ProgressDialog.show(Program.this,
+                    "Please Wait", null, true, true);*/
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            // progressDialog.dismiss();
+
+            Log.d(TAG, "response - " + result);
+
+            if (result == null){
+
+            }
+            else {
+
+            }
+        }
+
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String serverURL = params[0];
+            String postParameters = params[1];
+
+
+            try {
+
+                URL url = new URL(serverURL);
+                Log.e("확인",serverURL);
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+
+
+                httpURLConnection.setReadTimeout(5000);
+                httpURLConnection.setConnectTimeout(5000);
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.connect();
+
+
+                OutputStream outputStream = httpURLConnection.getOutputStream();
+                outputStream.write(postParameters.getBytes("UTF-8"));
+                outputStream.flush();
+                outputStream.close();
+
+
+                int responseStatusCode = httpURLConnection.getResponseCode();
+                Log.d(TAG, "response code - " + responseStatusCode);
+
+                InputStream inputStream;
+                if(responseStatusCode == HttpURLConnection.HTTP_OK) {
+                    inputStream = httpURLConnection.getInputStream();
+                }
+                else{
+                    inputStream = httpURLConnection.getErrorStream();
+                }
+
+
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+
+                StringBuilder sb = new StringBuilder();
+                String line;
+
+                while((line = bufferedReader.readLine()) != null){
+                    sb.append(line);
+                }
+
+                bufferedReader.close();
+
+                return sb.toString().trim();
+
+
+            } catch (Exception e) {
+
+                Log.d(TAG, "GetData : Error ", e);
+                errorString = e.toString();
+
+                return null;
+            }
+
+        }
+    }
 
 
     //날짜를 계산해주는 함수식

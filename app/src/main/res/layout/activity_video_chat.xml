@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_video_chat_view"
     android:layout_width="match_parent"
@@ -11,10 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FF6C92">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/icon_padding"/>
+            android:layout_above="@id/icon_padding"
+            android:layout_marginBottom="2dp">
+
+        </RelativeLayout>
+
         <RelativeLayout
             android:id="@+id/icon_padding"
             android:layout_width="match_parent"
@@ -76,14 +82,145 @@
             android:onClick="onLocalAudioMuteClicked"
             android:src="@drawable/btn_unmute"
             android:scaleType="centerCrop"/>
+        <ImageView
+            android:id="@+id/btn_brush"
+            android:layout_width="@dimen/other_button_size"
+            android:layout_height="@dimen/other_button_size"
+            android:layout_toRightOf="@id/btn_switch_camera"
+            android:layout_toEndOf="@id/btn_switch_camera"
+            android:layout_marginLeft="20dp"
+            android:layout_centerVertical="true"
+            android:onClick="onButton"
+            android:src="@drawable/brush"
+            android:scaleType="centerCrop"/>
+
+        <ImageView
+            android:id="@+id/btn_center"
+            android:layout_width="@dimen/call_button_size"
+            android:layout_height="@dimen/call_button_size"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:scaleType="centerCrop"/>
+
+        <ImageView
+            android:id="@+id/btn_call_first"
+            android:layout_width="@dimen/other_button_size"
+            android:layout_height="@dimen/other_button_size"
+            android:layout_toLeftOf="@id/btn_center"
+            android:layout_toStartOf="@id/btn_center"
+            android:layout_marginRight="@dimen/control_bottom_horizontal_margin"
+            android:layout_centerVertical="true"
+            android:onClick="onStartCallClicked"
+            android:src="@drawable/btn_startcall"
+            android:visibility="gone"
+            android:scaleType="centerCrop"/>
+
+        <ImageView
+            android:id="@+id/btn_endcall_first"
+            android:layout_width="@dimen/other_button_size"
+            android:layout_height="@dimen/other_button_size"
+            android:layout_toRightOf="@id/btn_center"
+            android:layout_toEndOf="@id/btn_center"
+            android:layout_marginLeft="@dimen/control_bottom_horizontal_margin"
+            android:layout_centerVertical="true"
+            android:src="@drawable/btn_endcall"
+            android:onClick="onStartEndCallClicked"
+            android:visibility="gone"
+            android:scaleType="centerCrop"/>
+
+
     </RelativeLayout>
 
-    <!--    <io.agora.uikit.logger.LoggerRecyclerView
-            android:id="@+id/log_recycler_view"
-            android:layout_width="@dimen/log_container_width"
-            android:layout_height="@dimen/log_container_height"
-            android:layout_above="@+id/control_panel"
-            android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin" />-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_brush"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#424040"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="LIGHTENING"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <SeekBar
+            android:id="@+id/seekBar_lightening"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="23dp"
+            android:max="100"
+            android:progress="70"
+            android:progressTint="#FFFFFF"
+            android:thumbTint="#FF6C92"
+            app:layout_constraintEnd_toEndOf="@+id/seekBar_smoothness"
+            app:layout_constraintStart_toStartOf="@+id/seekBar_smoothness"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:text="SMOOTHNESS"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+        <SeekBar
+            android:id="@+id/seekBar_smoothness"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:max="100"
+            android:progress="50"
+            android:progressTint="#FFFFFF"
+            android:thumbTint="#FF6C92"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/textView13"
+            app:layout_constraintTop_toBottomOf="@+id/seekBar_lightening" />
+
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:text="REDNESS"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+        <SeekBar
+            android:id="@+id/seekBar_redness"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:max="100"
+            android:progressTint="#FFFFFF"
+            android:thumbTint="#FF6C92"
+            android:progress="10"
+            app:layout_constraintEnd_toEndOf="@+id/seekBar_smoothness"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/seekBar_smoothness"
+            app:layout_constraintTop_toBottomOf="@+id/seekBar_smoothness" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </RelativeLayout>
