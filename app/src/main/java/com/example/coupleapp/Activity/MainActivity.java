@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Boolean signok;
 
-    private String message="";
+    private String message="2";
 
     private boolean test;
     @Override
@@ -169,6 +169,7 @@ public class MainActivity extends AppCompatActivity {
         tv_count=findViewById(R.id.tv_count);
         ibtn_video=findViewById(R.id.ibtn_video);
 
+        message="2";
         ibtn_video.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -289,7 +290,13 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else if(id == R.id.couple_diary){
                 }
-                else if(id == R.id.couple_calender){
+                else if(id == R.id.couple_calender) {
+
+                }else if(id == R.id.couple_dday){
+                    Intent intent = new Intent(getApplicationContext(), AnniversaryActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
                 }
 
                 return true;
@@ -302,17 +309,20 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
 
+
         LocalBroadcastManager.getInstance(this).registerReceiver( mMessageReceiver, new IntentFilter("custom-event-name"));
         GetData3 task3 = new GetData3();
         task3.execute( "http://" + IP_ADDRESS + "/message_read.php?couple_idx="+couple_idx+"&email="+email, "");
+
+        message ="2";
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
         LocalBroadcastManager.getInstance(this).unregisterReceiver( mMessageReceiver);
 
+        message ="2";
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -557,7 +567,7 @@ public class MainActivity extends AppCompatActivity {
                         .skipMemoryCache(true).into(c_imgv_woman);
 
 
-                tv_date.setText(caldate(year,month-1,day)+"일");
+                tv_date.setText(caldate(year,month-1,day+1)+"일");
                 tv_manname.setText(manname);
                 tv_womanname.setText(womanname);
                 if(mainimg==""){
@@ -578,6 +588,10 @@ public class MainActivity extends AppCompatActivity {
 
 
             }
+            SharedPreferences appData = getSharedPreferences("DAY",MODE_PRIVATE);
+            SharedPreferences.Editor editor = appData.edit();
+            editor.putString("day",caldate(year,month-1,day+1)+"일");
+            editor.apply();
 
 
 

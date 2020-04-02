@@ -28,12 +28,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".Activity.AnniversaryActivity"></activity>
+        <activity android:name=".Activity.AnniversaryModifyActivity"/>
+        <activity android:name=".Activity.AnniversaryAddActivity"/>
         <activity android:name=".Activity.VideoTokenActivity">
-<!--            <intent-filter>
+
+            <!--
+                <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
+            -->
         </activity>
         <activity android:name=".Activity.VideoChatActivity" />
         <activity android:name=".Activity.ChatImagedatailActivity" />

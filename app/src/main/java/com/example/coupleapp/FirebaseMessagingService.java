@@ -49,12 +49,16 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
 
             Log.d("messageService", "Broadcasting message");
             Intent intent = new Intent("custom-event-name");
+            intent.putExtra("start", "2");
             intent.putExtra("reject", "1");
+            intent.putExtra("end", "2");
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }else if(type.equals("end")){
             Log.d("messageService", "Broadcasting message");
             Intent intent = new Intent("custom-event-name");
+            intent.putExtra("start", "2");
             intent.putExtra("end", "1");
+            intent.putExtra("reject", "2");
             LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
         }
 
@@ -83,6 +87,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
                 if (type.equals("video")) {
                     Intent intent = new Intent("custom-event-name");
                     intent.putExtra("start", "1");
+                    intent.putExtra("end", "2");
+                    intent.putExtra("reject", "2");
                     LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
                     String title = remoteMessage.getData().get("title");

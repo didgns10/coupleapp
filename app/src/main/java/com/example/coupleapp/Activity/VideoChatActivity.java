@@ -86,7 +86,8 @@ public class VideoChatActivity extends AppCompatActivity {
     private String couple_idx;
     private String start;
 
-    private String message;
+    private String message="2";
+    private String end="2";
 
 
     private static String IP_ADDRESS = "13.125.232.78";
@@ -235,7 +236,6 @@ public class VideoChatActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // 그 다음 AsyncTask 객체를 만들어 execute()한다
-
         LocalBroadcastManager.getInstance(this).registerReceiver( mMessageReceiver, new IntentFilter("custom-event-name"));
 
         SharedPreferences appData = getSharedPreferences("VIDEO_ON",MODE_PRIVATE);
@@ -256,6 +256,7 @@ public class VideoChatActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = appData.edit();
         editor.putBoolean("video_on", false);
         editor.apply();
+
     }
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -265,7 +266,7 @@ public class VideoChatActivity extends AppCompatActivity {
             message = intent.getStringExtra("reject");
             Log.d("receiver", "Got message: " + message);
 
-            String end = intent.getStringExtra("endcall");
+             end = intent.getStringExtra("end");
 
             if(message.equals("1")){
                 Toast.makeText(VideoChatActivity.this, "상대방이 전화수신을 거부하였습니다.",Toast.LENGTH_SHORT).show();
@@ -506,7 +507,6 @@ public class VideoChatActivity extends AppCompatActivity {
         super.onDestroy();
         if (!mCallEnd) {
             leaveChannel();
-            Dialog();
             finish();
         }
         RtcEngine.destroy();
@@ -517,8 +517,8 @@ public class VideoChatActivity extends AppCompatActivity {
         mRtcEngine.leaveChannel();
         Dialog();
 
-        GetData task = new GetData();
-        task.execute( "http://" + IP_ADDRESS + "/video_end.php?email="+email+"&couple_idx="+couple_idx, "");
+       GetData task = new GetData();
+       task.execute( "http://" + IP_ADDRESS + "/video_end.php?email="+email+"&couple_idx="+couple_idx, "");
 
         finish();
     }
