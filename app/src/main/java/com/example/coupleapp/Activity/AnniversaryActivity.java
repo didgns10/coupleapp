@@ -156,8 +156,6 @@ public class AnniversaryActivity extends AppCompatActivity {
                 }
                 else if(id == R.id.story_album){
                 }
-                else if(id == R.id.couple_diary){
-                }
                 else if(id == R.id.couple_calender){
                 }
 

@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.example.coupleapp.Activity.Calender.CalenderDiaryActivity;
 import com.example.coupleapp.FirebaseMessagingService;
 import com.example.coupleapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -288,10 +289,11 @@ public class MainActivity extends AppCompatActivity {
                     intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
                 }
-                else if(id == R.id.couple_diary){
-                }
                 else if(id == R.id.couple_calender) {
-
+                    Intent intent = new Intent(getApplicationContext(), CalenderDiaryActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
                 }else if(id == R.id.couple_dday){
                     Intent intent = new Intent(getApplicationContext(), AnniversaryActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

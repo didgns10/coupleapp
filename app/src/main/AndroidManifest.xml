@@ -28,6 +28,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".Activity.Calender.DiaryModifyActivity"></activity>
+        <activity android:name=".Activity.Calender.DiaryDetailActivity" />
+        <activity android:name=".Activity.Calender.DiaryAddActivity" />
+        <activity android:name=".Activity.Calender.CalenderModifyActivity" />
+        <activity
+            android:name=".Activity.Calender.CalenderAddActivity"
+            android:launchMode="singleInstance" />
+        <activity android:name=".Activity.Calender.CalenderDiaryActivity">
+            <!--            <intent-filter>
+                            <action android:name="android.intent.action.MAIN" />
+
+                            <category android:name="android.intent.category.LAUNCHER" />
+                        </intent-filter>-->
+        </activity>
         <activity android:name=".Activity.AnniversaryActivity"></activity>
         <activity android:name=".Activity.AnniversaryModifyActivity"/>
         <activity android:name=".Activity.AnniversaryAddActivity"/>
