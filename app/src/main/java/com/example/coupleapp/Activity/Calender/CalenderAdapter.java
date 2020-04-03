@@ -180,7 +180,7 @@ public class CalenderAdapter extends RecyclerView.Adapter<CalenderAdapter.ViewHo
                 Toast.makeText(context,"일정이 삭제 되었습니다.",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, CalenderDiaryActivity.class);
                 intent.putExtra("start",date);
-                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(intent);
             }
         }

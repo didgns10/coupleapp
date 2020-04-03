@@ -1,5 +1,6 @@
 package com.example.coupleapp.Activity.Calender;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -196,8 +197,9 @@ public class DiaryCommentAdapter extends RecyclerView.Adapter<DiaryCommentAdapte
                 intent.putExtra("name",name);
                 intent.putExtra("content",content);
                 intent.putExtra("focus",focus);
-                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 context.startActivity(intent);
+                ((Activity)context).finish();
             }
         }
 

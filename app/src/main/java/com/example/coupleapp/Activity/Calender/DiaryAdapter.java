@@ -225,8 +225,9 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> 
                 Toast.makeText(context,"다이어리가 삭제 되었습니다.",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, CalenderDiaryActivity.class);
                 intent.putExtra("start",date);
-                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 context.startActivity(intent);
+
             }
         }
 

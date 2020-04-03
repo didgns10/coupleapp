@@ -168,6 +168,7 @@ public class CalenderModifyActivity extends AppCompatActivity {
                     Intent intent = new Intent(CalenderModifyActivity.this, CalenderDiaryActivity.class);
                     intent.putExtra("start",et_date.getText().toString());
                     intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
 
                     startActivity(intent);
                     finish();

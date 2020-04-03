@@ -134,9 +134,8 @@ public class DiaryAddActivity extends AppCompatActivity {
                     Toast.makeText(DiaryAddActivity.this,"다이어리를 추가했습니다",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(DiaryAddActivity.this, CalenderDiaryActivity.class);
                     intent.putExtra("start",date);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
-                    finish();
                 }
             }
         }

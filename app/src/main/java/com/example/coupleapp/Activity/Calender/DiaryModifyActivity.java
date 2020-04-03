@@ -138,7 +138,7 @@ public class DiaryModifyActivity extends AppCompatActivity {
                     Toast.makeText(DiaryModifyActivity.this,"다이어리를 수정했습니다",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(DiaryModifyActivity.this, CalenderDiaryActivity.class);
                     intent.putExtra("start",date);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finish();
                 }

@@ -162,6 +162,7 @@ public class DiaryDetailActivity extends AppCompatActivity {
                     // AsyncTask로 값들을 JSON 형태로 가져올 수 있게 한다
                     task1.execute( "http://" + IP_ADDRESS + "/diary_comment_add.php?couple_idx="+couple_idx+"&diary_idx="+idx+"&name="+name+"&date="+getTime+"&comment="+comment, "");
 
+                    mArrayList.clear();
                     GetData task = new GetData();
 
                     // execute() 사용 시 DB의 값을 JSON 형태로 가져오는 코드가 적힌 php 파일의 경로를 적어
