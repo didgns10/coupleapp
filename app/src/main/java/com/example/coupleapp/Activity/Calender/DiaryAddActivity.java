@@ -39,8 +39,13 @@ public class DiaryAddActivity extends AppCompatActivity {
     private String date;
     private String time;
 
+    private SharedPreferences sf;
     private SharedPreferences sf_idx;
+    private String email;
     private String couple_idx;
+    private SharedPreferences sfc;
+    private String name;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +57,15 @@ public class DiaryAddActivity extends AppCompatActivity {
         //커플 인덱스 번호가져오기
         sf_idx =getSharedPreferences("COPLE",MODE_PRIVATE);
         couple_idx = sf_idx.getString("cople_idx","");
+
+        //로그인 저장 정보
+        sfc = getSharedPreferences("CHAT",MODE_PRIVATE);
+        name = sfc.getString("name","");
+
+        //로그인 저장 정보
+        sf = getSharedPreferences("LOGIN",MODE_PRIVATE);
+        email = sf.getString("et_email","");
+
 
         long now = System.currentTimeMillis();
         Date mDate = new Date(now);
@@ -87,7 +101,8 @@ public class DiaryAddActivity extends AppCompatActivity {
                     GetData task = new GetData();
                     // execute() 사용 시 DB의 값을 JSON 형태로 가져오는 코드가 적힌 php 파일의 경로를 적어
                     // AsyncTask로 값들을 JSON 형태로 가져올 수 있게 한다
-                    task.execute( "http://" + IP_ADDRESS + "/diary_add.php?couple_idx="+couple_idx+"&date="+date+"&time="+time+"&title="+title+"&content="+content+"&name=팀노바", "");
+                    task.execute( "http://" + IP_ADDRESS + "/diary_add.php?couple_idx="+couple_idx+"&date="+date+"&time="+time+"&title="
+                            +title+"&content="+content+"&name="+name+"&email="+email, "");
                 }
             }
         });

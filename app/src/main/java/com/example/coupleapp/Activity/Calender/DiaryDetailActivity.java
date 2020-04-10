@@ -1,6 +1,7 @@
 package com.example.coupleapp.Activity.Calender;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -109,6 +110,9 @@ public class DiaryDetailActivity extends AppCompatActivity {
         imageButton_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(DiaryDetailActivity.this, CalenderDiaryActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
                 finish();
             }
         });
@@ -160,9 +164,12 @@ public class DiaryDetailActivity extends AppCompatActivity {
 
                     // execute() 사용 시 DB의 값을 JSON 형태로 가져오는 코드가 적힌 php 파일의 경로를 적어
                     // AsyncTask로 값들을 JSON 형태로 가져올 수 있게 한다
-                    task1.execute( "http://" + IP_ADDRESS + "/diary_comment_add.php?couple_idx="+couple_idx+"&diary_idx="+idx+"&name="+name+"&date="+getTime+"&comment="+comment, "");
+                    task1.execute( "http://" + IP_ADDRESS + "/diary_comment_add.php?couple_idx="+couple_idx+"&diary_idx="+idx+"&name="+name
+                            +"&date="+getTime+"&comment="+comment+"&email="+email
+                            +"&diary_title="+title+"&diary_content="+content+"&diary_date="+date+"&diary_time="+time+"&diary_focus="+focus, "");
 
                     mArrayList.clear();
+
                     GetData task = new GetData();
 
                     // execute() 사용 시 DB의 값을 JSON 형태로 가져오는 코드가 적힌 php 파일의 경로를 적어

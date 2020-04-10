@@ -110,7 +110,7 @@ public class CalenderAddActivity extends AppCompatActivity {
 
                     // execute() 사용 시 DB의 값을 JSON 형태로 가져오는 코드가 적힌 php 파일의 경로를 적어
                     // AsyncTask로 값들을 JSON 형태로 가져올 수 있게 한다
-                    task.execute("http://" + IP_ADDRESS + "/alarm_add.php?couple_idx="+couple_idx + "&date=" + date + "&title=" + title, "");
+                    task.execute("http://" + IP_ADDRESS + "/alarm_add.php?couple_idx="+couple_idx + "&date=" + date + "&title=" + title+ "&email=" + email, "");
                 }
             }
         });
@@ -163,8 +163,7 @@ public class CalenderAddActivity extends AppCompatActivity {
                     Toast.makeText(CalenderAddActivity.this,"일정을 추가했습니다",Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(CalenderAddActivity.this, CalenderDiaryActivity.class);
                     intent.putExtra("start",et_date.getText().toString());
-                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finish();
                 }
