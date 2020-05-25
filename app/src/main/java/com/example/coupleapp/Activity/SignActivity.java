@@ -66,9 +66,6 @@ public class SignActivity extends AppCompatActivity {
                 InsertData task = new InsertData();
                 task.execute("http://" + IP_ADDRESS + "/insert.php", email,password,token);
 
-
-
-
             }
         });
 
