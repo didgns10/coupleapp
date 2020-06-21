@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.coupleapp.Activity.Calender.CalenderDiaryActivity;
+import com.example.coupleapp.Activity.DateCourse.DatecouseActivity;
 import com.example.coupleapp.FirebaseMessagingService;
 import com.example.coupleapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -156,7 +157,6 @@ public class MainActivity extends AppCompatActivity {
 
         //레이아웃 선언들
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        tv_logout = (TextView)findViewById(R.id.tv_logout);
         tv_date = (TextView)findViewById(R.id.tv_date);
         tv_manname = (TextView)findViewById(R.id.tv_manname);
         tv_womanname = (TextView)findViewById(R.id.tv_womanname);
@@ -213,19 +213,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        tv_logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences.Editor editor = sf.edit();
-                editor.putBoolean("SAVE_LOGIN_DATA", false);
-                editor.putString("et_email", "");
-                editor.apply();
-
-                Intent intent = new Intent(MainActivity.this,StartpageActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
         ftbt_background.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -277,11 +264,11 @@ public class MainActivity extends AppCompatActivity {
                 if(id == R.id.mainpage){
 
                 }
-                else if(id == R.id.date_course){/*
-                    Intent intent = new Intent(getApplicationContext(), SelectActivity.class);
+                else if(id == R.id.date_course){
+                    Intent intent = new Intent(getApplicationContext(), DatecouseActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent);*/
+                    startActivity(intent);
                 }
                 else if(id == R.id.story_album){
                     Intent intent = new Intent(getApplicationContext(), StoryActivity.class);
@@ -299,6 +286,15 @@ public class MainActivity extends AppCompatActivity {
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
+                }else if(id == R.id.logout){
+                    SharedPreferences.Editor editor = sf.edit();
+                    editor.putBoolean("SAVE_LOGIN_DATA", false);
+                    editor.putString("et_email", "");
+                    editor.apply();
+
+                    Intent intent = new Intent(MainActivity.this,StartpageActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
 
                 return true;

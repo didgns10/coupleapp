@@ -13,7 +13,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.example.coupleapp.Activity.AnniversaryActivity;
+import com.example.coupleapp.Activity.DateCourse.DatecouseActivity;
 import com.example.coupleapp.Activity.MainActivity;
+import com.example.coupleapp.Activity.StartpageActivity;
+import com.example.coupleapp.Activity.StoryActivity;
 import com.example.coupleapp.R;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -279,15 +283,34 @@ public class CalenderDiaryActivity extends AppCompatActivity {
                     intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
                 }
-                else if(id == R.id.date_course){/*
-                    Intent intent = new Intent(getApplicationContext(), SelectActivity.class);
+                else if(id == R.id.date_course){
+                    Intent intent = new Intent(getApplicationContext(), DatecouseActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent);*/
+                    startActivity(intent);
                 }
                 else if(id == R.id.story_album){
+                    Intent intent = new Intent(getApplicationContext(), StoryActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
                 }
-                else if(id == R.id.couple_calender){
+                else if(id == R.id.couple_calender) {
+                }else if(id == R.id.couple_dday){
+
+                    Intent intent = new Intent(getApplicationContext(), AnniversaryActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                }else if(id == R.id.logout){
+                    SharedPreferences.Editor editor = sf.edit();
+                    editor.putBoolean("SAVE_LOGIN_DATA", false);
+                    editor.putString("et_email", "");
+                    editor.apply();
+
+                    Intent intent = new Intent(CalenderDiaryActivity.this, StartpageActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
 
                 return true;

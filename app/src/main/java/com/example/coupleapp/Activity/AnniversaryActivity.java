@@ -22,6 +22,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.coupleapp.Activity.Calender.CalenderDiaryActivity;
+import com.example.coupleapp.Activity.DateCourse.DatecouseActivity;
 import com.example.coupleapp.Adapter.AnniversaryAdapter;
 import com.example.coupleapp.Model.AnniversaryData;
 import com.example.coupleapp.R;
@@ -148,15 +150,34 @@ public class AnniversaryActivity extends AppCompatActivity {
                     intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
                 }
-                else if(id == R.id.date_course){/*
-                    Intent intent = new Intent(getApplicationContext(), SelectActivity.class);
+                else if(id == R.id.date_course){
+                    Intent intent = new Intent(getApplicationContext(), DatecouseActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent);*/
+                    startActivity(intent);
                 }
                 else if(id == R.id.story_album){
+                    Intent intent = new Intent(getApplicationContext(), StoryActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
                 }
-                else if(id == R.id.couple_calender){
+                else if(id == R.id.couple_calender) {
+                    Intent intent = new Intent(getApplicationContext(), CalenderDiaryActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                }else if(id == R.id.couple_dday){
+
+                }else if(id == R.id.logout){
+                    SharedPreferences.Editor editor = sf.edit();
+                    editor.putBoolean("SAVE_LOGIN_DATA", false);
+                    editor.putString("et_email", "");
+                    editor.apply();
+
+                    Intent intent = new Intent(AnniversaryActivity.this, StartpageActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
 
                 return true;

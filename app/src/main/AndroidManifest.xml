@@ -28,6 +28,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB8QrTgwmfruUPaR45eNLPwbQlD5-jOZQo" />
+
         <activity android:name=".Activity.Calender.DiaryModifyActivity"></activity>
         <activity android:name=".Activity.Calender.DiaryDetailActivity" />
         <activity android:name=".Activity.Calender.DiaryAddActivity" />
@@ -47,13 +52,11 @@
         <activity android:name=".Activity.AnniversaryAddActivity"/>
         <activity android:name=".Activity.VideoTokenActivity">
 
-            <!--
                 <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            -->
         </activity>
         <activity android:name=".Activity.VideoChatActivity" />
         <activity android:name=".Activity.ChatImagedatailActivity" />
@@ -77,11 +80,11 @@
             android:name=".Activity.StoryActivity"
             android:launchMode="singleInstance" />
         <activity android:name=".Activity.MainActivity">
-            <intent-filter>
+<!--            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity android:name=".Activity.LoginActivity">
 
@@ -133,6 +136,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             -->
+        </activity>
+
+
+        <activity android:name=".Activity.DateCourse.DateCourseDetailActivity"></activity>
+        <activity android:name=".Activity.DateCourse.DateReviewUpdateActivity" />
+        <activity android:name=".Activity.DateCourse.DateReviewAddActivity" />
+        <activity android:name=".Activity.DateCourse.DatePlaceReviewActivity" />
+        <activity android:name=".Activity.DateCourse.DatePlaceDetailActivity" />
+        <activity android:name=".Activity.Map.GoogleMapActivity" />
+        <activity android:name=".Activity.DateCourse.DatecouseActivity">
+ <!--           <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
         </activity>
 
         <service

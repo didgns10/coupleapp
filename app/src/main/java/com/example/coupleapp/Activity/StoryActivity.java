@@ -10,11 +10,14 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.coupleapp.Activity.Calender.CalenderDiaryActivity;
+import com.example.coupleapp.Activity.DateCourse.DatecouseActivity;
 import com.example.coupleapp.R;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -25,6 +28,8 @@ public class StoryActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private DrawerLayout mDrawerLayout;
+
+    private SharedPreferences sf;
 
 
 
@@ -42,6 +47,11 @@ public class StoryActivity extends AppCompatActivity {
         storyViewPagerAdapter.addFragment(new AlbumFragment(), "");
         viewPager.setAdapter(storyViewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
+
+
+        //로그인 저장 정보
+        sf = getSharedPreferences("LOGIN",MODE_PRIVATE);
+
 
         // 탭들의 제목 설정
         tabLayout.getTabAt(0).setText("스토리");
@@ -70,17 +80,39 @@ public class StoryActivity extends AppCompatActivity {
 
                 //메뉴바에 아이디랑 같은지 확인하고 그 메뉴를 클릭했을때 무슨 동작을 해줄건지에 대한 부분
                 if(id == R.id.mainpage){
-
-                }
-                else if(id == R.id.date_course){/*
-                    Intent intent = new Intent(getApplicationContext(), SelectActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(intent);*/
+                    startActivity(intent);
+                }
+                else if(id == R.id.date_course){
+                    Intent intent = new Intent(getApplicationContext(), DatecouseActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
                 }
                 else if(id == R.id.story_album){
+
                 }
-                else if(id == R.id.couple_calender){
+                else if(id == R.id.couple_calender) {
+                    Intent intent = new Intent(getApplicationContext(), CalenderDiaryActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                }else if(id == R.id.couple_dday){
+                    Intent intent = new Intent(getApplicationContext(), AnniversaryActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
+                }else if(id == R.id.logout){
+                    SharedPreferences.Editor editor = sf.edit();
+                    editor.putBoolean("SAVE_LOGIN_DATA", false);
+                    editor.putString("et_email", "");
+                    editor.apply();
+
+                    Intent intent = new Intent(StoryActivity.this, StartpageActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
 
                 return true;
