@@ -97,7 +97,6 @@ public class ProfileWriteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_write);
 
-
         rbtn_man = (RadioButton) findViewById(R.id.rbtn_man);
         rbtn_woman = (RadioButton) findViewById(R.id.rbtn_woman);
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
@@ -169,7 +168,6 @@ public class ProfileWriteActivity extends AppCompatActivity {
 
                 uploadImage();
 
-
             }
         });
 
@@ -185,12 +183,12 @@ public class ProfileWriteActivity extends AppCompatActivity {
     // 레트로핏을 통한 프로필 업로드 과정
     private void uploadImage(){
 
-
         name = et_name.getText().toString().trim();
         birthday = et_birthday.getText().toString().trim();
         date = et_date.getText().toString().trim();
         profileimg = imageToString();
 
+        //ApiInterface 인터페이스에서 Post로 보낼 ProfileClass를 담은 Call 객체를 선언하는 부분
         ApiInterface apiInterface = ApiClient.getApiClient().create(ApiInterface.class);
         Call<ProfileClass> call = apiInterface.uploadImage1(email,name,birthday,sex,profileimg,date);
 
@@ -200,15 +198,18 @@ public class ProfileWriteActivity extends AppCompatActivity {
 
                 ProfileClass profileClass = response.body();
 
+                Log.d("프로필전송반응확인",profileClass.getResponse()+"");
+
                 if(profileClass.getResponse().equals("no")){
+
                     Toast.makeText(ProfileWriteActivity.this,"빈칸없이 채워주세요",Toast.LENGTH_SHORT).show();
+
                 }else if(profileClass.getResponse().equals("yes")){
-                    //성공했을경우 회원가입 성공이라는 쉐어드에 담아 메인으로 넘어가게끔 한다.
+                    //성공했을경우 회원가입 성공이라는 쉐어드에 담아 다음 액티비티로 넘어가게끔 한다.
                     SharedPreferences grant = getSharedPreferences("SIGNOK", MODE_PRIVATE);
                     SharedPreferences.Editor editor = grant.edit();
                     editor.putBoolean("SIGNOK" + email, true);
                     editor.apply();
-
 
                     Toast.makeText(ProfileWriteActivity.this,"회원가입을 완료했습니다.",Toast.LENGTH_SHORT).show();
 
